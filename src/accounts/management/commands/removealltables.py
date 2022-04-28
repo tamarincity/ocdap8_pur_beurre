@@ -10,7 +10,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
             print("🛑 Do you really want to DROP (delete) ALL THE PUBLIC TABLES from the database? 🛑")
-            choice = input("type the following sentence to confirm: yes, drop all! ")
+            choice = input("Type the following sentence to confirm: yes, drop all! ")
             if choice.lower() == "yes, drop all!":
                 print("You will lose 💣💥 everything in the database !!! ")
                 choice = input("If you really want to remove all the public tables, type: remove all tables!  ")
