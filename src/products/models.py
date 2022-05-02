@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+from .constants import PRODUCT_NAME_MAX_LENGTH, QUANTITY_MAX_LENGTH
+
 
 # Create your models here.
 class Customer(AbstractUser):
@@ -15,9 +17,9 @@ class Customer(AbstractUser):
 
 
 class Product (models.Model):
-   name = models.CharField(max_length=50, help_text='Name of the product')
-   off_id = models.IntegerField()
-   quantity = models.CharField(max_length=20)
+   name = models.CharField(max_length=PRODUCT_NAME_MAX_LENGTH, help_text='Name of the product')
+   original_id = models.BigIntegerField()
+   quantity = models.CharField(max_length=QUANTITY_MAX_LENGTH)
    # keywords = (str(_keywords) + categories + product_name + generic_name + code)
    keywords = models.TextField()
    url = models.URLField()
@@ -29,7 +31,7 @@ class Product (models.Model):
    # nutriments_100g = these to string =>(
    # nutriments["energy-kcal"], nut..["fat_100g"], ["fat_unit"], ["fiber_100g"], ["fiber_unit"],
    # ["proteins_100g"], ["proteins_unit"], ["salt_100g"], ["salt_unit"], ["sugar_100g"], ["sugar_unit"])
-   nutriments_100g = models.TextField()
+   nutriments = models.JSONField()
 
 
    #Metadata

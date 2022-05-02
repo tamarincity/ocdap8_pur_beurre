@@ -1,3 +1,28 @@
+NBR_OF_PAGES = 4
+PAGE_NBR_FOR_EXTRACTION_FILENAME = 'page_nbr.txt'
+PRODUCT_NAME_MAX_LENGTH = 50
+PRODUCTS_PER_PAGE = 20  # ====== Should be reset to 50
+QUANTITY_MAX_LENGTH = 30
+REQUIRED_FIELDS_OF_A_PRODUCT = (
+    "_id,"
+    "product_name_fr,"
+    "quantity,"
+    "brands,"
+    "ingredients_text_fr,"
+    "nutriscore_grade,"
+    "nutriments,"
+    "pnns_groups_1,"
+    "image_thumb_url,"
+    "image_url,"
+    "stores,"
+    "stores_tags,"
+    "categories_old,"
+    "url,"
+    "lang,"
+    "generic_name_fr,"
+    "code,"
+    "_keywords")
+
 UNWANTED_CATEGORIES = [
     "Alimentos",
     "Aperitivos",
@@ -9,14 +34,16 @@ UNWANTED_CATEGORIES = [
     "Breads",
     "Breakfasts",
     "Canned",
+    "Chocolate powders",
     "Cibi ",
     "Cibo",
     "Coleslaw",
     "Common Beans",
-    "Dorrobst",
     "Crisp",
     "Diet Beverages",
     "Diet Cola Soft Drink",
+    "Dorrobst",
+    "Dranken",
     "Dry ",
     "Dry Pastas",
     "Durum Wheat Pasta",
@@ -24,6 +51,7 @@ UNWANTED_CATEGORIES = [
     "Fats",
     "Flavour",
     "Food",
+    "Frisdranken",
     "Frucht",
     "Getränke",
     "Getranke",
@@ -38,6 +66,8 @@ UNWANTED_CATEGORIES = [
     "Instant Beverages",
     "Kaffeegetranke",
     "Knr Moul Leg Autref 2X1L",
+    "Koolzuurhoudende dranken",
+    "Kunstmatig gezoete dranken",
     "Lebensmittel",
     "Legume Milks",
     "Legumes And Their Products",
@@ -46,6 +76,7 @@ UNWANTED_CATEGORIES = [
     "Mandelmilch",
     "Meals",
     "Meat Analogues",
+    "Milk chocolate biscuits",
     "Milk Substitute",
     "Mixes-Of-Squeezed-Fruit-Juices",
     "Mountain Products",
@@ -89,23 +120,4 @@ UNWANTED_CATEGORIES = [
     "It:",
     "1/2"]
 
-NBR_OF_PAGES = 4
-PAGE_NBR_FOR_EXTRACTION_FILENAME = 'page_nbr.txt'
-PRODUCTS_PER_PAGE = 5  # ====== Should be reset to 50
 URL_OPEN_FOOD_FACT = "https://fr.openfoodfacts.org/cgi/search.pl"
-REQUIRED_FIELDS_OF_A_PRODUCT = (
-    "_id,"
-    "product_name_fr,"
-    "quantity,"
-    "brands,"
-    "ingredients_text_fr,"
-    "nutriscore_grade,"
-    "nutriments,"
-    "pnns_groups_1,"
-    "image_url,"
-    "stores,"
-    "stores_tags,"
-    "categories_old,"
-    "url,"
-    "lang",
-    "_keywords,")

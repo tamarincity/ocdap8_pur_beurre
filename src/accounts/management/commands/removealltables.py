@@ -27,4 +27,5 @@ class Command(BaseCommand):
                 print("You have chosen not to remove the public tables.")
 
         except Exception as e:
+            
             raise CommandError(f"Error: {e}")

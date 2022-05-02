@@ -1,7 +1,7 @@
 # ocdap8_pur_beurre
 Website that allows you to find a food equivalent to the one of your choice but of better quality.
 
-## Adding products in the database
+## Adding products to the database
 
 Open the terminal in the src folder then type:
 python manage.py addproducts "quantity" "keyword" "quantity" "keyword" "quantity" "keyword" ...
