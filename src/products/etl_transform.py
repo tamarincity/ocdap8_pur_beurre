@@ -5,7 +5,7 @@ from django.utils.text import slugify
 
 from icecream import ic
 
-from ..constants import (
+from .constants import (
     PRODUCT_NAME_MAX_LENGTH,
     QUANTITY_MAX_LENGTH,
     UNWANTED_CATEGORIES,
@@ -43,16 +43,17 @@ def remove_products_with_unwanted_categories(categories):
     return categories
 
 
-def product_with_mega_keywords(product):
+def add_mega_keywords_to_product(product):
     
     keywords = " ".join(product._keywords)
     
     mega_keywords = (
         product.product_name_fr
+        + " " + product.quantity
         + " " + product.generic_name_fr
         + " " + product.categories_old
         + " " + keywords
-        + " " + product.code)
+        + " " + str(product.code))
     
     mega_keywords = slugify(mega_keywords).replace("-", " ")
     
@@ -83,7 +84,7 @@ def transform_product(product):
         product.product_name_fr = product.product_name_fr[:PRODUCT_NAME_MAX_LENGTH - 3] + "..."
     if len(product.quantity) > QUANTITY_MAX_LENGTH:
         product.quantity = product.quantity[:QUANTITY_MAX_LENGTH - 3] + "..."
-    product = product_with_mega_keywords(product)
+    product = add_mega_keywords_to_product(product)
     
     return product
 

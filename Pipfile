@@ -9,6 +9,8 @@ psycopg2-binary = "*"
 python-decouple = "*"
 requests = "*"
 icecream = "*"
+pytest-django = "*"
+pytest-cov = "*"
 
 [dev-packages]
 

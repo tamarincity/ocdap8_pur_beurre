@@ -4,9 +4,9 @@ import logging
 from django.core.management.base import BaseCommand, CommandError
 from icecream import ic
 
-from products.etl.extract import download_products
-from products.etl.transform import fetch_all_categories_from_products
-from products.etl.load import populate_database
+from products.etl_extract import download_products
+from products.etl_transform import fetch_all_categories_from_products
+from products.etl_load import populate_database
 
 
 # Import any models, django modules or packages here
