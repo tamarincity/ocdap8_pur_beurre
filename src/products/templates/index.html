@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo</title>
+</head>
+<body>
+
+    <div>
+        <form action = "get-origial-product" method="get">
+        Produit à remplacer :
+        <input 
+            type="text"
+            name="keywords_of_original_product"
+            placeholder="Mots clefs ou code bar">
+        <br><br>
+        <input type="submit" />
+    </form><br>
+    </div>
+
+    <div>
+        <hr/>
+        {% for product in original_products %}
+        <form action = "get-substitutes" method="get">
+                <button type="submit" style="width: 100%;">
+                    <input 
+                        type="text"
+                        name="id"
+                        value="{{ product.id }}"
+                        hidden/>
+                    <center>{{product.name}}</center><br />
+                    <center>Marque: {{product.brands}}</center><br />
+                    <center><img src="{{product.image_thumb_url}}" /></center>
+                </button><br/>
+            </form>
+            {% endfor %}
+    </div>
+
+</body>
+</html>

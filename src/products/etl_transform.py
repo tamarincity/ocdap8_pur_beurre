@@ -1,10 +1,9 @@
 from pprint import pprint
 import logging
 
-from django.utils.text import slugify
-
 from icecream import ic
 
+from products import utils
 from .constants import (
     PRODUCT_NAME_MAX_LENGTH,
     QUANTITY_MAX_LENGTH,
@@ -50,14 +49,15 @@ def add_mega_keywords_to_product(product):
     mega_keywords = (
         product.product_name_fr
         + " " + product.quantity
+        + " " + product.brands
         + " " + product.generic_name_fr
         + " " + product.categories_old
         + " " + keywords
         + " " + str(product.code))
     
-    mega_keywords = slugify(mega_keywords).replace("-", " ")
+    mega_keywords = utils.format_text(mega_keywords)
     
-    product.mega_keywords = f" {mega_keywords} "
+    product.mega_keywords = mega_keywords
     
     return product
 

@@ -1,7 +1,9 @@
 import logging
+import ast
 
 from django.db import models
 from django.db import transaction
+from django.db.models import Q
 
 from accounts.models import Customer
 
@@ -12,6 +14,8 @@ from .constants import PRODUCT_NAME_MAX_LENGTH, QUANTITY_MAX_LENGTH
 
 class Product (models.Model):
     name = models.CharField(max_length=PRODUCT_NAME_MAX_LENGTH, help_text='Name of the product')
+    brands = models.TextField(help_text='Brands of the product')
+    code = models.BigIntegerField(help_text='Bar code of the product')
     original_id = models.BigIntegerField(unique=True, db_index=True)
     quantity = models.CharField(max_length=QUANTITY_MAX_LENGTH)
     # keywords = (str(_keywords) + categories + product_name + generic_name + code)
@@ -55,6 +59,8 @@ class Product (models.Model):
                     except Product.DoesNotExist:  # if the product is not already stored
                         is_new_product_added = True
                         stored_product = Product(
+                                brands=product.brands,
+                                code=product.code,
                                 image_thumb_url=product.image_thumb_url,
                                 image_url=product.image_url,
                                 ingredients_text=product.ingredients_text_fr,
@@ -81,6 +87,22 @@ class Product (models.Model):
         except Exception as e:
             logging.error("Error adding products. Exception was: %s", e)
             return False
+
+    @classmethod
+    def find_original_products(cls, keywords: str):
+        """Get products by keywords.
+        All the keywords must be in product.keywords for the product to get selected.
+        return: list of products
+        """
+        keywords = keywords.replace(",", " ")
+        keywords_as_list = keywords.split()
+
+        param = Q(keywords__icontains=keywords_as_list[0])
+        for keyword in keywords_as_list[1:]:
+            param &= Q(keywords__icontains=keyword)
+
+        products = Product.objects.filter(param)
+        return products
 
 
 class L_Favorite (models.Model):
