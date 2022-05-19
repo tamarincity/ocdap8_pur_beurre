@@ -69,7 +69,7 @@ class WellFormedProduct:  # Model used for each product to get downloaded
                 setattr(self, "is_valid", True)
 
 
-def Check_fields_of_product(product_downloaded: dict):
+def check_fields_of_product(product_downloaded: dict):
     """Check if all required fields of the product are present.
     Returns an instance. Not a dict!!!"""    
     if not (
@@ -84,6 +84,13 @@ def get_url(url):
 
 
 def download_products(required_nbr_of_products: int, keyword):
+
+    if      not (    required_nbr_of_products
+                    and keyword
+                    and isinstance(required_nbr_of_products, int)
+                    and isinstance(keyword, str)
+            or required_nbr_of_products < 1):
+        return
     
     page_nbr = -9
     nbr_of_downloaded_products = 0
@@ -123,7 +130,7 @@ def download_products(required_nbr_of_products: int, keyword):
                 
                 for downloaded_product in res['products']:
                     
-                    verified_product = Check_fields_of_product(downloaded_product)
+                    verified_product = check_fields_of_product(downloaded_product)
                     if not (
                                 verified_product
                                 and verified_product.is_valid):
