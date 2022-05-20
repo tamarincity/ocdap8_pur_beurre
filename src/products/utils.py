@@ -5,7 +5,7 @@ from django.utils.text import slugify
 
 def format_text(text_to_modify):
 
-    text_to_modify = text_to_modify.lower()
+    text_to_modify = " " + text_to_modify.lower() + " "
     # Remove unwanted words
     text_to_modify = (text_to_modify
         .replace(" au ", " ")
@@ -27,6 +27,10 @@ def format_text(text_to_modify):
         .replace(" brands ", " ")
         .replace(" code: ", " ")
     )
+
+    text_to_modify = (text_to_modify
+        .replace(" & ", " et ")
+        .replace("&", " et "))
 
     text_to_modify = text_to_modify.replace(".", "xxpoointxx")
     text_to_modify = text_to_modify.replace(",", "xxviirgxx")
