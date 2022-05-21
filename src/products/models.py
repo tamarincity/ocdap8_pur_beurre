@@ -1,13 +1,17 @@
 import logging
 import ast
 
-from django.db import models
+from django.db import connection, models
 from django.db import transaction
 from django.db.models import Q
 
 from accounts.models import Customer
 
-from .constants import PRODUCT_NAME_MAX_LENGTH, QUANTITY_MAX_LENGTH
+from .constants import (
+    MAX_NBR_OF_SUBSTITUTE_PRODUCTS,
+    PRODUCT_NAME_MAX_LENGTH,
+    QUANTITY_MAX_LENGTH
+)
 
 
 # Create your models here.
@@ -104,6 +108,105 @@ class Product (models.Model):
         products = Product.objects.filter(param)
         return products
 
+    @classmethod
+    def find_substitute_products(cls, original_product_id: str, original_product_nutriscore : str):
+        """Returns a list of substitute products for a given product id.
+        The products will be selected according to the number of categories in common
+        with the original one then according to their nutriscore_grade (A to E).
+        """
+
+        product_fields_as_str = (
+            "p.id,"
+            "p.name,"
+            "p.brands,"
+            "p.code,"
+            "p.original_id,"
+            "p.quantity,"
+            "p.keywords,"
+            "p.url,"
+            "p.image_url,"
+            "p.image_thumb_url,"
+            "p.nutriscore_grade,"
+            "p.ingredients_text,"
+            "p.stores,"
+            "p.nutriments,")
+
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    f"""
+                        SELECT
+                            {product_fields_as_str}
+                            product_id,
+                            COUNT(product_id) AS weight
+                        from
+                            products_product p
+                        inner join
+                            products_category_products
+                            on p.id = product_id
+                        where
+                            category_id in (select cp.category_id from products_product p
+                                        inner join products_category_products cp
+                                            on p.id = cp.product_id
+                                        where p.id =
+                    """
+                    " %s"
+                    """)
+                            and nutriscore_grade < 
+                    """
+                    " %s"
+                    f"""
+                        GROUP BY 
+                            {product_fields_as_str}
+                            product_id
+                        ORDER BY 
+                            weight desc,
+                            p.nutriscore_grade asc
+                        limit 
+                    """
+                    " %s",
+                    [   original_product_id,
+                        original_product_nutriscore,
+                        MAX_NBR_OF_SUBSTITUTE_PRODUCTS])
+
+                rows = cursor.fetchall()
+
+            fields = [
+                "id",
+                "name",
+                "brands",
+                "code",
+                "original_id",
+                "quantity",
+                "keywords",
+                "url",
+                "image_url",
+                "image_thumb_url",
+                "nutriscore_grade",
+                "ingredients_text",
+                "stores",
+                "nutriments",
+                "product_to_substitute_id",
+                "weight"]
+
+            # Creation of the following:
+            # [{field1:val1, field2: val2}, {field1:val1, field2: val2}...]
+            products = [
+                {
+                    fields[i]: val
+                    if fields[i] != "nutriments"  # "nutriments" is a json into a string
+                    else {"nutriment": ast.literal_eval(val)}  # "nutriments" => str to json
+                    for i, val in enumerate(product)
+                }
+                for product in rows
+            ]
+
+        except Exception as e:
+            logging.error("Error while getting substitute products:")
+            logging.error(str(e))
+            products = []
+        
+        return products
 
 class L_Favorite (models.Model):
     customer = models.ForeignKey(Customer, related_name='favorites', on_delete=models.CASCADE)

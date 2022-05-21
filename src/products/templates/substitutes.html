@@ -22,7 +22,7 @@
 
     <div>
         <hr/>
-        {% for product in original_products %}
+        {% for product in substitute_products %}
         <form action = "get-substitutes" method="get">
             <button type="submit" style="width: 100%;">
                 <input type="hidden" name="nutriscore_grade" value="{{product.nutriscore_grade}}" />
