@@ -22,18 +22,28 @@ class Product (models.Model):
     code = models.BigIntegerField(help_text='Bar code of the product')
     original_id = models.BigIntegerField(unique=True, db_index=True)
     quantity = models.CharField(max_length=QUANTITY_MAX_LENGTH)
-    # keywords = (str(_keywords) + categories + product_name + generic_name + code)
-    keywords = models.TextField()
-    url = models.URLField()
-    image_url = models.URLField()
     image_thumb_url = models.URLField()
-    nutriscore_grade = models.CharField(max_length=2)
+    image_url = models.URLField()
     ingredients_text = models.TextField()
-    stores = models.TextField()
+
+    # keywords = (" "
+    #       + product_name_fr
+    #       + quantity
+    #       + brands
+    #       + generic_name_fr
+    #       + categories_old
+    #       + keywords_as_list
+    #       + str(code)
+    #       + " ")
+    keywords = models.TextField()
+
     # nutriments_100g = these to string =>(
     # nutriments["energy-kcal"], nut..["fat_100g"], ["fat_unit"], ["fiber_100g"], ["fiber_unit"],
     # ["proteins_100g"], ["proteins_unit"], ["salt_100g"], ["salt_unit"], ["sugar_100g"], ["sugar_unit"])
     nutriments = models.JSONField()
+    nutriscore_grade = models.CharField(max_length=2)
+    stores = models.TextField()
+    url = models.URLField()
 
 
     #Metadata

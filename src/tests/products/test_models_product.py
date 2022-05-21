@@ -8,15 +8,17 @@ class TestProductModel:
 
     def add_a_product(self):
         return Product.objects.create(
+            name="Product name",
+            brands="brand1, brand2",
+            code=8714100614754,
+            original_id=9876543210,
+            quantity="Quantity 1.5l",
             image_thumb_url="url-thumb-image",
             image_url="url-thumb-image",
             ingredients_text="list of ingredients",
             keywords="some keywords (mega key_words)",
-            name="Product name",
             nutriments="Some nutriments",
             nutriscore_grade="Grade (A B C D E)",
-            original_id=9876543210,
-            quantity="Quantity",
             stores="All the stores where you can find the product",
             url="url_of_the_website_of_the_product",
         )
@@ -24,15 +26,17 @@ class TestProductModel:
     def test_should_add_a_product_to_the_db(self):
         product = self.add_a_product()
 
+        assert product.name == "Product name"
+        assert product.brands == "brand1, brand2"
+        assert product.code == 8714100614754
+        assert product.original_id == 9876543210
+        assert product.quantity == "Quantity 1.5l"
         assert product.image_thumb_url == "url-thumb-image"
         assert product.image_url == "url-thumb-image"
         assert product.ingredients_text == "list of ingredients"
         assert product.keywords == "some keywords (mega key_words)"
-        assert product.name == "Product name"
         assert product.nutriments == "Some nutriments"
         assert product.nutriscore_grade == "Grade (A B C D E)"
-        assert product.original_id == 9876543210
-        assert product.quantity == "Quantity"
         assert product.stores == "All the stores where you can find the product"
         assert product.url == "url_of_the_website_of_the_product"
 
