@@ -51,7 +51,7 @@ class WellFormedProduct:  # Model used for each product to get downloaded
 
         nbr_of_model_attributes_found_in_downloaded_product = 0
 
-        # The attributes of WellFormedProduct must be presnt in the downloaded product
+        # The attributes of WellFormedProduct must be present in the downloaded product
         # and not empty
         for field, value in downloaded_product.items():
             if (    value

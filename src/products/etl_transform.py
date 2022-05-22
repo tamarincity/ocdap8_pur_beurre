@@ -11,7 +11,7 @@ from .constants import (
 )
 
 
-def str_to_list(string: str):
+def str_to_list(string: str) -> list:
     """Convert string to list using "," as a separator"""
     
     if not (
@@ -33,7 +33,7 @@ def str_to_list(string: str):
         return None
 
 
-def remove_products_with_unwanted_categories(categories):    
+def remove_products_with_unwanted_categories(categories: list[str]) -> list[str]:    
     for unwanted_category in UNWANTED_CATEGORIES:
         if unwanted_category in categories:
             

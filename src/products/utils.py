@@ -20,12 +20,17 @@ def format_text(text_to_modify):
         .replace(" des ", " ")
         .replace(" du ", " ")
         .replace(" marque: ", " ")
-        .replace(" marque ", " ")
         .replace(" marques: ", " ")
-        .replace(" marques ", " ")
         .replace(" brands: ", " ")
-        .replace(" brands ", " ")
         .replace(" code: ", " ")
+        .replace(" marque:", " ")
+        .replace(" marques:", " ")
+        .replace(" brands:", " ")
+        .replace(" code:", " ")
+        .replace(" marques ", " ")
+        .replace(" brands ", " ")
+        .replace(" code ", " ")
+        .replace(" marque ", " ")
     )
 
     text_to_modify = (text_to_modify
@@ -43,12 +48,15 @@ def format_text(text_to_modify):
 
 def format_quantity_and_unit(text_to_modify):
     """Format quantity.
-    - Turn 1000 ml into 1l
-    - Turn 1,5 L into 1.5l
+    - Convert 1000 ml into 1l
+    - Convert 1,5 L into 1.5l
+    - Convert 330 ml into 33cl
+    ...
     """
 
     if not isinstance(text_to_modify,str):
-        logging.error("Error! Text to modify is not a string")
+        logging.error("Error in format_quantity_and_unit! "
+        "Text to modify should be a string")
         return ""
 
     text_to_modify = remove_space_between_quantity_and_unit(text_to_modify)
@@ -95,7 +103,14 @@ def format_quantity_and_unit(text_to_modify):
     return text_to_modify
 
 
-def remove_space_between_quantity_and_unit(text_to_modify):
+def remove_space_between_quantity_and_unit(text_to_modify: str) -> str:
+    
+    if not (    text_to_modify
+                and isinstance(text_to_modify, str)):
+        logging.error("""Error in utils.remove_space_between_quantity_and_unit().
+        the arg (text to modify) should be a string and should not be empty.""")
+        return ""
+    text_to_modify = text_to_modify.lower()
     text_to_modify = text_to_modify.strip()
     text_to_modify = " " + text_to_modify + " "
     return (text_to_modify
@@ -106,7 +121,7 @@ def remove_space_between_quantity_and_unit(text_to_modify):
             .replace(" dl ", "dl ")
             .replace(" g ", "g ")
             .replace(" kg ", "kg ")
-            .replace(" Kg ", "Kg ")
+            .replace(" kg ", "kg ")
             .replace(" mm ", "mm ")
             .replace(" cm ", "cm ")
             .replace(" dm ", "dm ")
@@ -121,4 +136,27 @@ def remove_space_between_quantity_and_unit(text_to_modify):
             .replace(" mm2 ", "mm2 ")
             .replace(" mm² ", "mm² ")
             .replace(" mm3 ", "mm3 ")
-            .replace(" mm³ ", "mm³ "))
+            .replace(" mm³ ", "mm³ ")
+            .replace(" l,", "l, ")
+            .replace(" cl,", "cl, ")
+            .replace(" ml,", "ml, ")
+            .replace(" hl,", "hl, ")
+            .replace(" dl,", "dl, ")
+            .replace(" g,", "g, ")
+            .replace(" kg,", "kg, ")
+            .replace(" kg,", "kg, ")
+            .replace(" mm,", "mm, ")
+            .replace(" cm,", "cm, ")
+            .replace(" dm,", "dm, ")
+            .replace(" m2,", "m2, ")
+            .replace(" m²,", "m², ")
+            .replace(" m3,", "m3, ")
+            .replace(" m³,", "m³, ")
+            .replace(" cm2,", "cm2, ")
+            .replace(" cm²,", "cm², ")
+            .replace(" cm3,", "cm3, ")
+            .replace(" cm³,", "cm³, ")
+            .replace(" mm2,", "mm2, ")
+            .replace(" mm²,", "mm², ")
+            .replace(" mm3,", "mm3, ")
+            .replace(" mm³,", "mm³, "))

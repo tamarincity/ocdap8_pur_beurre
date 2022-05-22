@@ -62,10 +62,10 @@ def test_check_fields_of_product(
     else:
         assert product == expected_value
 
-@pytest.mark.test_me
+
 def test_get_url():
     print("url is empty should raise exception: requests.exceptions.MissingSchema")
-    with pytest.raises(requests.exceptions.MissingSchema):
+    with pytest.raises(requests.exceptions.MissingSchema):  # equiv to assert for exceptions
         get_url("")
 
     print("url is not a string should raise exception: requests.exceptions.MissingSchema")
@@ -84,10 +84,18 @@ def test_get_url():
 
 class TestDownloadProducts():
 
+    # The first group of requests is the set of the first request of each worker
+    # If there are 10 workers then for the first group of requests, the the
+    # param "page" of the url should be "page=1" for the 1st worker ..."page=10"
+    # for the last worker
+    # In the second group of requests, the param "page" of the url should be 
+    # "page=11"... "page=20" etc.
     is_first_page_in_first_group_of_request = False
     is_any_page_of_second_group_of_request = False
 
     def test_download_products(self, monkeypatch):
+
+        # params of the function download_products()
         positive_required_nbr_of_products = 15
         required_nbr_of_products_is_null = 0
         required_nbr_of_products_is_negative = -15
