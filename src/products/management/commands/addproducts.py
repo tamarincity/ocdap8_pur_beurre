@@ -13,7 +13,7 @@ from products.etl_load import populate_database
 
 class Command(BaseCommand):
     help = ('Download products from Open Food Facts API '
-        '(command: addproducts 100 boissons 50 petit-dejeuners)')
+        '(command: addproducts 100 boisson 50 "pate a tartiner")')
 
     def add_arguments(self, parser):
         parser.add_argument('list_of_args', nargs='+')

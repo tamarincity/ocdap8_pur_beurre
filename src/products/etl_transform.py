@@ -3,6 +3,7 @@ import logging
 
 from icecream import ic
 
+from products.etl_extract import WellFormedProduct
 from products import utils
 from .constants import (
     PRODUCT_NAME_MAX_LENGTH,
@@ -19,21 +20,21 @@ def str_to_list(string: str) -> list:
             and isinstance(string, str)):
         logging.warning("Arg in str_to_list must be a string and not empty!")
         return None
-    try:
         
-        elements = string.split(',')
-        
-        elements = [element.strip().capitalize() for element in elements]
-        
-        return elements
-    except Exception as e:
-        
-        logging.error("Error: unable to parse categories!")
-        logging.error(str(e))
-        return None
+    elements = string.split(',')    
+    elements = [element.strip().capitalize() for element in elements]
+    
+    return elements
 
 
 def remove_products_with_unwanted_categories(categories: list[str]) -> list[str]:    
+    if not categories:
+        return None
+    if not isinstance(categories, list):
+        raise TypeError
+
+    categories = [category for category in categories if category]
+
     for unwanted_category in UNWANTED_CATEGORIES:
         if unwanted_category in categories:
             
@@ -42,7 +43,7 @@ def remove_products_with_unwanted_categories(categories: list[str]) -> list[str]
     return categories
 
 
-def add_mega_keywords_to_product(product):
+def add_mega_keywords_to_product(product: WellFormedProduct):
     
     keywords = " ".join(product._keywords)
     
