@@ -1,6 +1,63 @@
 import logging
+from dataclasses import dataclass, fields  # Built in modules
 
 from django.utils.text import slugify
+
+
+@dataclass(init=False)
+class WellFormedProduct:  # Model used for each product to get downloaded
+    _id: int
+    _keywords: list
+    brands: str
+    categories: list
+    categories_old: str
+    code: int
+    generic_name_fr: str
+    image_thumb_url: str
+    image_url: str
+    ingredients_text_fr: str
+    lang: str
+    mega_keywords: str
+    nutriments: dict
+    nutriscore_grade: str
+    pnns_groups_1: str
+    product_name_fr: str
+    quantity: str
+    stores: str
+    stores_tags: list
+    url: str
+
+    def __init__(self, downloaded_product):
+        # Add fields to the downloading product to make it conform to this model
+        downloaded_product["categories"] = [True]
+        downloaded_product["mega_keywords"] = "True"
+        downloaded_product["nutriments_100g"] = "True"
+        
+        # Below, browse all the attributes of the WellFormedProduct class
+        # and put them in a tuple named "model_attributes"
+        model_attributes = tuple(field.name for field in fields(self))
+
+        # Add to the created object, the attribute "is_valid" with the value "False".
+        setattr(self, "is_valid", False)
+
+        nbr_of_model_attributes_found_in_downloaded_product = 0
+
+        # The attributes of WellFormedProduct must be present in the downloaded product
+        # and not empty
+        for field, value in downloaded_product.items():
+            if (    value
+                    and field in model_attributes):
+
+                nbr_of_model_attributes_found_in_downloaded_product +=1
+                # Assign to the instance of WellFormedProduct (self) a key and its value
+                setattr(self, field, value)
+
+            if (    nbr_of_model_attributes_found_in_downloaded_product == len(model_attributes)
+                    and downloaded_product["lang"] == "fr"):
+
+                # Modify the attribute "is_valid" of the created instance (self)
+                # with the new value: True.
+                setattr(self, "is_valid", True)
 
 
 def format_text(text_to_modify):
@@ -160,3 +217,5 @@ def remove_space_between_quantity_and_unit(text_to_modify: str) -> str:
             .replace(" mm²,", "mm², ")
             .replace(" mm3,", "mm3, ")
             .replace(" mm³,", "mm³, "))
+
+

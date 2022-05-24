@@ -1,9 +1,16 @@
 import pytest
 
 from products import etl_transform as SUT
+from products.etl_extract import WellFormedProduct
+from tests.products.params_for_mark_parametrize.params_etl_extract import (
+    good_downloaded_product,
+)
+
 from products.constants import (
     UNWANTED_CATEGORIES,
 )
+
+good_downloaded_product_as_object = WellFormedProduct(good_downloaded_product)
 
 
 def test_str_to_list(caplog):
@@ -23,7 +30,8 @@ def test_str_to_list(caplog):
     print("     should log a warning")
     assert "WARNING" in caplog.text
 
-    print("""Words separated by space should return all the words as one element of a list.
+    print("""Words separated by space should return all the words as one element of """
+    """a list.
     All the words should be lower case except for the first one
     that should be capitalized""")
     assert SUT.str_to_list("word1 word2   WORD3") == ["Word1 word2   word3"]
@@ -31,7 +39,7 @@ def test_str_to_list(caplog):
     print("Words separated by coma should return a list of capitalized words.")
     assert SUT.str_to_list(str_to_turn_into_list) == expected
 
-@pytest.mark.test_me
+
 def test_remove_products_with_unwanted_categories():
 
 
@@ -52,3 +60,23 @@ def test_remove_products_with_unwanted_categories():
     should return the list without the empty categories""")
     assert SUT.remove_products_with_unwanted_categories(
         ["cat1", "", "cat2", None]) == ['cat1', 'cat2']
+
+@pytest.mark.test_me
+def test_add_mega_keywords_to_product(monkeypatch):
+
+    mega_keywords = (   ' name of the product pack 8 pieces the brand the generic name '
+                        'of the product category_1, category_2 these are keywords '
+                        '5012345678912 ')
+    good_product = good_downloaded_product_as_object
+    good_product.mega_keywords = mega_keywords
+
+    print("Any product which is not an instance of WellFormedProduct "
+            "should return an exception")
+    # good_downloaded_product is a dict
+    with pytest.raises(Exception):
+        SUT.add_mega_keywords_to_product(good_downloaded_product)
+
+    print("An instance of WellFormedProduct should return updated with a new value "
+            "for the mega_keywords field")
+    assert SUT.add_mega_keywords_to_product(
+        good_downloaded_product_as_object) == good_product

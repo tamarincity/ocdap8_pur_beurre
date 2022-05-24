@@ -3,7 +3,7 @@ import logging
 
 from icecream import ic
 
-from products.etl_extract import WellFormedProduct
+from products.utils import WellFormedProduct
 from products import utils
 from .constants import (
     PRODUCT_NAME_MAX_LENGTH,
@@ -45,6 +45,12 @@ def remove_products_with_unwanted_categories(categories: list[str]) -> list[str]
 
 def add_mega_keywords_to_product(product: WellFormedProduct):
     
+    if not (    product
+                and isinstance(product, WellFormedProduct)):
+
+        raise Exception("Error in products.etl_transform add_mega_keywords_to_product()"
+            ": product must be an instance of WellFormedProduct")
+        
     keywords = " ".join(product._keywords)
     
     mega_keywords = (
