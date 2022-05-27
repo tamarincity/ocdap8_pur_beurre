@@ -11,7 +11,6 @@ def populate_database(products: list, categories: set)->bool:
     """Populate the database with products and categories.
     Return True if everything went well otherwise False"""
 
-    # print("categories to put into the database: ", categories)
     print("Quantity of products to put into the database: ", len(products))
     print()
     if not (    products

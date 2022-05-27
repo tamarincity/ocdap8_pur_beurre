@@ -62,15 +62,27 @@ def add_mega_keywords_to_product(product: WellFormedProduct):
         + " " + keywords
         + " " + str(product.code))
     
-    mega_keywords = utils.format_text(mega_keywords)
+    mega_keywords = mega_keywords.replace("...", " ")
     
+    mega_keywords = utils.format_text(mega_keywords)    
     product.mega_keywords = mega_keywords
     
     return product
 
 
-def transform_product(product):
+def transform_product(product: WellFormedProduct) -> WellFormedProduct or None:
+    """Take a product which is an instance of WellFormedProduct as arg.
+
+    - Replace the attribut categories with another made from categories_old.
+        categories_old (str) => categories (list)
+
+    - Cut the value of the attribut product_name_fr if too long
+    - Cut the value of the attribut quantity if too long
+    - Replace the attribut mega_keyword with a new one made with several attributes
+        of the product itself.
     
+    Returns the modified product (or None if something went wrong).
+    """
     categories_as_string = (
         product.categories_old.replace("Aliments et boissons ", "")
             .replace(" & ", " et ")
@@ -87,14 +99,22 @@ def transform_product(product):
     setattr(product, "categories", categories_as_list)
     setattr(product, "categories_old", categories_as_string)
 
+    product = add_mega_keywords_to_product(product)
+
     if len(product.product_name_fr) > PRODUCT_NAME_MAX_LENGTH:
-        product.product_name_fr = product.product_name_fr[:PRODUCT_NAME_MAX_LENGTH - 3] + "..."
+        product.product_name_fr = (
+            product.product_name_fr[:PRODUCT_NAME_MAX_LENGTH - 3] + "...")
+
     if len(product.quantity) > QUANTITY_MAX_LENGTH:
         product.quantity = product.quantity[:QUANTITY_MAX_LENGTH - 3] + "..."
-    product = add_mega_keywords_to_product(product)
+
     
     return product
 
 
-def fetch_all_categories_from_products(products):
-    return set(category for product in products for category in product.categories)
+def fetch_all_categories_from_products(products: list[WellFormedProduct]) -> set:
+    if not (    products
+                and isinstance(products, list)
+                and isinstance(products[0], WellFormedProduct)):
+        return set()
+    return set(category for product in products for category in product.categories if category)

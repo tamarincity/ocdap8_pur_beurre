@@ -28,14 +28,18 @@ def get_origial_product(request):
         logging.error('No keywords found for original product')
         return render(request, 'index.html')
 
-    keywords = utils.format_text(keywords)
-    original_products = Product.find_original_products(keywords)
+    original_products: list[Product] = None
+    if (keywords
+            and isinstance(keywords, str)):
+
+        keywords = utils.format_text(keywords)
+        original_products = Product.find_original_products(keywords)
 
     if not original_products:
         logging.info("No original products found!")
 
     # If there is only one original product found then should redirect to get substitutes
-    if len(original_products) == 1:
+    if original_products and len(original_products) == 1:
         return redirect(
             reverse('get_substitutes')
             + f'?id={original_products[0].id}'

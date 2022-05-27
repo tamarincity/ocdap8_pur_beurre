@@ -7,6 +7,7 @@ from django.db.models import Q
 
 from accounts.models import Customer
 
+from products.utils import WellFormedProduct
 from .constants import (
     MAX_NBR_OF_SUBSTITUTE_PRODUCTS,
     PRODUCT_NAME_MAX_LENGTH,
@@ -55,14 +56,23 @@ class Product (models.Model):
         return self.name
 
     @classmethod
-    def add_many(cls, products: list, stored_categories: dict)->bool:
+    def add_many(cls, products: list[WellFormedProduct], stored_categories: dict)-> bool:
         """Add products to the database then return True if they were added successfully
-        otherwise False"""
+        otherwise False.
+        The arg products is a list of instances of WellFormedProduct.
+        The arg stored_categories contain the names of the categories as keys 
+        and the corresponding instances as values"""
+
         if not (    products
                     and stored_categories
                     and isinstance(products, list)
                     and isinstance(stored_categories, dict)):
+
             return False
+        for value in stored_categories.values():
+            if not isinstance(value, Category):
+                print("RRRRRRR")
+                return False
 
         is_new_product_added = False
         try:
@@ -108,14 +118,20 @@ class Product (models.Model):
         All the keywords must be in product.keywords for the product to get selected.
         return: list of products
         """
+        if not (keywords
+                and isinstance(keywords, str)):
+            return None
+
         keywords = keywords.replace(",", " ")
         keywords_as_list = keywords.split()
 
-        param = Q(keywords__icontains=keywords_as_list[0])
+        # First element of the params
+        params = Q(keywords__icontains=keywords_as_list[0])
+        # Add all of the the other params to make the query to the db
         for keyword in keywords_as_list[1:]:
-            param &= Q(keywords__icontains=keyword)
+            params &= Q(keywords__icontains=keyword)
 
-        products = Product.objects.filter(param)
+        products = Product.objects.filter(params)
         return products
 
     @classmethod
@@ -239,7 +255,7 @@ class Category(models.Model):
         return self.name
 
     @classmethod
-    def add_many(cls, categories: list)->dict:
+    def add_many(cls, categories: list)->dict:  # keys are names, values are instance of Category
         """Add categories to the database and return a dictionary that contains
         each stored category as an object.
         E.g.: stored_categories["Beverage
