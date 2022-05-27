@@ -71,7 +71,6 @@ class Product (models.Model):
             return False
         for value in stored_categories.values():
             if not isinstance(value, Category):
-                print("RRRRRRR")
                 return False
 
         is_new_product_added = False
@@ -140,6 +139,36 @@ class Product (models.Model):
         The products will be selected according to the number of categories in common
         with the original one then according to their nutriscore_grade (A to E).
         """
+
+        if not (original_product_id
+                and original_product_nutriscore
+                and isinstance(original_product_id, str)
+                and isinstance(original_product_nutriscore, str)):
+            
+            print("type(original_product_id): ", type(original_product_id))
+            print("type(original_product_nutriscore): ", type(original_product_nutriscore))
+            print("original_product_id: ", original_product_id)
+            print("original_product_nutriscore: ", original_product_nutriscore)
+
+            raise Exception("original_product_id and original_product_nutriscore must be "
+                "strings and not empty")
+
+        try:
+            int(original_product_id)
+        except ValueError:
+            raise Exception("Error in products.models.Product.find_substitute_products()! "
+                            "original_product_id must be convertible to integer!")
+
+        try:
+            int(original_product_nutriscore)
+            raise Exception("Error in products.models.Product.find_substitute_products()! "
+                            "original_product_nutriscore must be ONE letter from a to e!")
+        except ValueError:
+            if len(original_product_nutriscore) != 1:
+                raise Exception("Error in products.models.Product.find_substitute_products()! "
+                                "original_product_nutriscore must be ONE letter from a to e!")
+
+
 
         product_fields_as_str = (
             "p.id,"
