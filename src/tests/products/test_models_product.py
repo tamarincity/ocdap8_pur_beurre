@@ -134,10 +134,60 @@ class TestProductModel:
 
 
     @pytest.mark.test_me
-    def test_find_substitute_products(self):
-        
-        substitutes = SUT.find_substitute_products(product2._id, product2.nutriscore_grade)
+    def test_find_substitute_products(self, add_products_to_db):
+        add_products_to_db
+
+
+        print("An original product")
+        cool_cola_with_score_e = SUT.objects.get(original_id=123457)        
+
+        substitutes = SUT.find_substitute_products(
+            str(cool_cola_with_score_e.id),
+            cool_cola_with_score_e.nutriscore_grade)
 
         print("substitutes: ", substitutes)
-        assert (len(substitutes) == 0
-                or substitutes[0].nutriscore_grade < product2.nutriscore_grade)
+
+        print("     should return a lis of dicts where a product is a dict")
+        assert isinstance(substitutes, list)
+        assert isinstance(substitutes[0], dict)
+
+        print("     should return a substitue product with a better nutriscore grade")
+        assert substitutes[0]["nutriscore_grade"] < cool_cola_with_score_e.nutriscore_grade
+
+        print("     should return a list of products ordered from the heavy wheight "
+                "(number of categories in common) to the lighter")
+        assert substitutes[0]["weight"] > substitutes[-1]["weight"]
+
+        print("An original product that does not have a better substitute ")
+        natural_carb_water_with_score_a = SUT.objects.get(original_id=123460)        
+
+        substitutes = SUT.find_substitute_products(
+            str(natural_carb_water_with_score_a.id),
+            natural_carb_water_with_score_a.nutriscore_grade)
+
+        print("     should return an empty list")
+        assert substitutes == []
+
+        print("A non string original product ID should raise an exception")
+        with pytest.raises(Exception):
+            SUT.find_substitute_products(
+            natural_carb_water_with_score_a.id,
+            natural_carb_water_with_score_a.nutriscore_grade)
+
+        print("An empty string as original product ID should raise an exception")
+        with pytest.raises(Exception):
+            SUT.find_substitute_products(
+                "",
+                natural_carb_water_with_score_a.nutriscore_grade)
+
+        print("A non string original nutriscore_grade should raise an exception")
+        with pytest.raises(Exception):
+            SUT.find_substitute_products(
+            str(natural_carb_water_with_score_a.id),
+            ["a"])
+
+        print("An empty string as original nutriscore_grade should raise an exception")
+        with pytest.raises(Exception):
+            SUT.find_substitute_products(
+            str(natural_carb_water_with_score_a.id),
+            "")

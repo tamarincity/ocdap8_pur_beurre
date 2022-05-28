@@ -144,11 +144,6 @@ class Product (models.Model):
                 and original_product_nutriscore
                 and isinstance(original_product_id, str)
                 and isinstance(original_product_nutriscore, str)):
-            
-            print("type(original_product_id): ", type(original_product_id))
-            print("type(original_product_nutriscore): ", type(original_product_nutriscore))
-            print("original_product_id: ", original_product_id)
-            print("original_product_nutriscore: ", original_product_nutriscore)
 
             raise Exception("original_product_id and original_product_nutriscore must be "
                 "strings and not empty")
@@ -167,7 +162,6 @@ class Product (models.Model):
             if len(original_product_nutriscore) != 1:
                 raise Exception("Error in products.models.Product.find_substitute_products()! "
                                 "original_product_nutriscore must be ONE letter from a to e!")
-
 
 
         product_fields_as_str = (
@@ -192,7 +186,9 @@ class Product (models.Model):
                     f"""
                         SELECT
                             {product_fields_as_str}
-                            product_id,
+                    """
+                    " %s"
+                    """,
                             COUNT(product_id) AS weight
                         from
                             products_product p
@@ -221,8 +217,10 @@ class Product (models.Model):
                     """
                     " %s",
                     [   original_product_id,
+                        original_product_id,
                         original_product_nutriscore,
                         MAX_NBR_OF_SUBSTITUTE_PRODUCTS])
+
 
                 rows = cursor.fetchall()
 
@@ -245,7 +243,7 @@ class Product (models.Model):
                 "weight"]
 
             # Creation of the following:
-            # [{field1:val1, field2: val2}, {field1:val1, field2: val2}...]
+            # products = [{field1:val1, field2: val2}, {field1:val1, field2: val2}...]
             products = [
                 {
                     fields[i]: val
@@ -284,7 +282,7 @@ class Category(models.Model):
         return self.name
 
     @classmethod
-    def add_many(cls, categories: list)->dict:  # keys are names, values are instance of Category
+    def add_many(cls, categories: set)->dict:  # keys are names, values are instance of Category
         """Add categories to the database and return a dictionary that contains
         each stored category as an object.
         E.g.: stored_categories["Beverage
