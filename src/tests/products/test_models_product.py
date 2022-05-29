@@ -70,8 +70,6 @@ def add_products_to_db(categories_as_dict):
     SUT.add_many(welformed_products, categories_as_dict)
 
 
-
-
 class TestProductModel:
 
     def test_add_many(self, caplog, categories_as_dict):
@@ -133,7 +131,6 @@ class TestProductModel:
         assert original_products[0].name == "Lemonade light"
 
 
-    @pytest.mark.test_me
     def test_find_substitute_products(self, add_products_to_db):
         add_products_to_db
 

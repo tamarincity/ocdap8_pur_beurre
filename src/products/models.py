@@ -289,16 +289,21 @@ class Category(models.Model):
         If somenthing went wrong, return None"""
 
         if not ( categories and isinstance(categories, set)):
+            logging.warning("Categories to add in database must be a set!")
             return None
 
         stored_categories = {}
         try:
             with transaction.atomic():  # Commit only if all queries have been done with success
                 for category in categories:
-                    try:
-                        stored_categories[category] = Category.objects.get_or_create(name=category)
-                    except Exception as e:
-                        raise Exception(str(e))
+                    if category and isinstance(category, str):
+                        try:
+                            stored_categories[category] = (
+                                Category.objects.get_or_create(name=category))
+                        except Exception as e:
+                            raise Exception(str(e))
+                    else:
+                        raise Exception("Each category must be a string and not empty")
 
             return stored_categories
         except Exception as e:

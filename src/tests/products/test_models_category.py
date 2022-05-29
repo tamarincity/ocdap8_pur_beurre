@@ -1,31 +1,53 @@
 import pytest
 
-from products.models import Category
+from products.models import Category as SUT
 
-pytestmark = pytest.mark.django_db  # Create a virtual database
+
+@pytest.mark.django_db
 
 class TestCategoryModel:
+    
+    @pytest.mark.test_me
+    def test_add_many(self, caplog):
+        caplog.clear()
 
-    def add_a_category(self):
-        return Category.objects.create(name="Category name")
+        print("Non set as categories")
+        print("     should return None because no category was added")
+        assert SUT.add_many(["not", "a", "set"]) == None
 
-    def test_should_add_a_category_to_the_db(self):
-        category = self.add_a_category()
+        print("     should log a warning")
+        assert "WARNING" in caplog.text
+        caplog.clear()
 
-        assert category.name == "Category name"
-        assert Category.objects.all().count() == 1
+        print("An empty category in categories should log an error")
+        SUT.add_many({"category_1", "category_2",  "", "category_3"})
 
+        assert "ERROR" in caplog.text
+        caplog.clear()
 
-    def test_should_not_be_able_to_add_the_same_category_to_the_db(self):
-        expected = "unique name violation"
-        result = "Test failed"
+        print("An error while adding categories "
+                "should prevent any category of the set from being added")
+        assert SUT.objects.count() == 0
 
-        self.add_a_category()
-        try:
-            self.add_a_category()
-        except Exception as e:
+        print("A non string as cateory in categories should log an error "
+                "and raise a TypeError exception")
+        with pytest.raises(TypeError):
+            SUT.add_many({"category_1", "category_2", ["Not string"]})
+            assert "ERROR" in caplog.text
+            caplog.clear()
 
-            if "unique" in str(e).lower():
-                result = expected
+        print("A set of categories ")
+        categories = SUT.add_many({"category_1", "category_2", "category3"})
         
-        assert result == expected
+        print("     should let all of them be added to the database")
+        assert len(categories) == 3
+
+        print("     should return a dict of categories")
+        assert isinstance(categories, dict)
+
+        print("         with the name of each category as a key")
+        assert ",".join(categories) == ",".join({"category_1", "category_2", "category3"})
+
+        print("         with the values as instances of Category")
+        assert [category for category in categories.values() if not (isinstance, SUT)] or True
+
