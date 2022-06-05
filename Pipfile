@@ -11,6 +11,7 @@ requests = "*"
 icecream = "*"
 pytest-django = "*"
 pytest-cov = "*"
+whitenoise = "*"
 
 [dev-packages]
 

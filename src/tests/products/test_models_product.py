@@ -142,8 +142,6 @@ class TestProductModel:
             str(cool_cola_with_score_e.id),
             cool_cola_with_score_e.nutriscore_grade)
 
-        print("substitutes: ", substitutes)
-
         print("     should return a lis of dicts where a product is a dict")
         assert isinstance(substitutes, list)
         assert isinstance(substitutes[0], dict)

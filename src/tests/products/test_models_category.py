@@ -7,7 +7,7 @@ from products.models import Category as SUT
 
 class TestCategoryModel:
     
-    @pytest.mark.test_me
+    # @pytest.mark.test_me
     def test_add_many(self, caplog):
         caplog.clear()
 

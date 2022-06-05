@@ -10,5 +10,4 @@ class Customer(AbstractUser):
         VIP = "VIP"
 
     customer_type = models.CharField(
-        choices=CustomerType.choices, default=CustomerType.CUSTOMER, max_length=30
-    )
+        choices=CustomerType.choices, default=CustomerType.CUSTOMER, max_length=30)
