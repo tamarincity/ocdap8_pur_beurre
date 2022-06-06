@@ -58,15 +58,22 @@
                 <!-- search bar -->
                 <div class="input-group">
                     <div class="center">
-                        <div class="one-row">
-                            <div class="form-outline">
-                                <input type="search" id="form1" class="form-control" />
-                                <!-- <label class="form-label" for="form1">Search</label> -->
+                        <form action = "get-origial-product" method="get">
+                            <div class="one-row">
+                                <div class="form-outline">
+                                    <input
+                                        type="search"
+                                        id="form1"
+                                        name="keywords_of_original_product"
+                                        class="form-control"
+                                        placeholder="Ici, produit à remplacer" />
+                                    <!-- <label class="form-label" for="form1">Search</label> -->
+                                </div>
+                                <button type="submit" class="btn btn-primary" style="left:-5px;">
+                                    <i class="bi bi-search"></i>
+                                </button>
                             </div>
-                            <button type="button" class="btn btn-primary" style="left:-5px;">
-                                <i class="bi bi-search"></i>
-                            </button>
-                        </div>
+                        </form>
                     </div>
                 </div>
 

@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+    <br/>
+    <br/>
+    <br/>
+    <section class="thin-section" id="contact">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-lg-8 col-xl-6 text-center">
+                    <img 
+                        class="height_10rem"
+                        src="static/images/remy.jpg" 
+                        alt="Rémy le rat du dessin animé Ratatouille, une cuillère en bois à la main" 
+                        title="Voici le formulaire de contact." />
+                    <h2 class="mt-0">Choisissez dans la liste ci-dessous le produit que vous voulez remplacer.</h2>
+                    <hr class="divider" />
+                </div>
+            </div>
+        </div>
+    </section>
+    <div>
+        <hr/>
+        
+        <div class="container-fluid p-0">
+            <div class="row g-0">
+                    {% for product in original_products %}        
+                        <div class="col-lg-4">
+                            <form action = "get-substitutes" method="get">
+                                <button class="product-as-button" type="submit">
+                                    <input type="hidden" name="nutriscore_grade" value="{{product.nutriscore_grade}}" />
+                                    <input 
+                                        type="text"
+                                        name="id"
+                                        value="{{ product.id }}"
+                                        hidden/>
+
+                                    <!-- Picture -->
+                                    <div class="one-row">
+                                        <div class="w-33pc"></div>
+                                        <div class="w-33pc">
+                                            <div class="one-row">
+                                            <img src="{{product.image_thumb_url}}" />
+                                            <img
+                                                class="mini-nutriscore"
+                                                src="static/images/nutriscore_{{product.nutriscore_grade}}.jpg"
+                                                alt="Nutriscore: {{product.nutriscore_grade}}"
+                                                title="{{product.name}}" />
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+                                    <!-- Summary -->
+                                    <center>{{product.name}}</center><br />
+                                    <center>Marque: {{product.brands}}</center><br />
+                                </button><br/>
+                            </form>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+
+
+
+        
+    </div>
+
+{% endblock %}

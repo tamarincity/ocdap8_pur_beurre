@@ -16,15 +16,22 @@
                 <!-- search bar -->
                 <div class="input-group">
                     <div class="center">
-                        <div class="one-row">
-                            <div class="form-outline">
-                                <input type="search" id="form1" class="form-control" />
-                                <!-- <label class="form-label" for="form1">Search</label> -->
+                        <form action = "get-origial-product" method="get">
+                            <div class="one-row">
+                                <div class="form-outline">
+                                    <input
+                                        type="search"
+                                        id="form1"
+                                        name="keywords_of_original_product"
+                                        class="form-control"
+                                        placeholder="Code barre / mots-clefs" />
+                                    <!-- <label class="form-label" for="form1">Search</label> -->
+                                </div>
+                                <button type="submit" class="btn btn-primary" style="left:-5px;">
+                                    <i class="bi bi-search"></i>
+                                </button>
                             </div>
-                            <button type="button" class="btn btn-primary" style="left:-5px;">
-                                <i class="bi bi-search"></i>
-                            </button>
-                        </div>
+                        </form>
                     </div>
                 </div>
 
@@ -55,8 +62,6 @@
     <div class="container-fluid p-0">
         <div class="row g-0">
 
-
-
             <div class="col-lg-6">
                 <p class="portfolio-box" href="static/images/portfolio/fullsize/1.jpg" title="Rémy">
                     <img class="img-fluid img-v40pc" src="static/images/ratatouille-portrait.jpg" alt="Image du rat Rémy du dessin animé Ratatouille" />
@@ -68,6 +73,7 @@
                     L'idée de Pur Beurre était née !"
                 </p>
             </div>
+            
             <div class="col-lg-6 ">
                 <p class="portfolio-box" href="static/images/portfolio/fullsize/2.jpg" title="Colette Tatou">
                     <img class="img-fluid img-v40pc" src="static/images/colette-tatou-full.png" alt="Image de Colette Tatou" />
@@ -79,8 +85,6 @@
                     l'habitude d'acheter par de bons produits du terroir Et souvent pour le même prix !"
                 </p>
             </div>
-                   
-
 
         </div>
     </div>

@@ -65,16 +65,17 @@ def signup_user(request):
             return render(request, 'accounts/signup.html')
 
         try:
-            # Création de l'utilisateur
+            # Creation of the user
             user = User.objects.create_user(username=username, password=password, email=username)
 
-            # Connexion de l'utilisateur
+            # User connection
             login(request, user)
 
             return redirect('products_home')
         
         except Exception as e:
-            if "UNIQUE constraint" in str(e):
+            print(str(e))
+            if "exists" in str(e):
                 messages.success(request, ("Cet utilisateur est déjà enregistré !"))
 
     return render(request,"accounts/signup.html")

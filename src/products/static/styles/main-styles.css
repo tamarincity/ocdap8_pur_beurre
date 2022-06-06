@@ -181,8 +181,21 @@ h1, .h1 {
   height: 10rem;
 }
 
-.footer-section {
+.footer-section .thin-section {
   padding: 1rem 0;
+}
+
+.w-33pc {
+width: 33.333333%;
+}
+
+.mini-nutriscore {
+  height:2.5rem;
+}
+
+.product-as-button {
+  width: 100%; background-color: #fff;
+  border: 0;
 }
 
 @media (min-width: 1200px) {

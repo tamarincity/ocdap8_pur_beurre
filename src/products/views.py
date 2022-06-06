@@ -26,7 +26,7 @@ def get_origial_product(request):
         keywords = request.GET['keywords_of_original_product']
     except Exception as e:        
         logging.error('No keywords found for original product')
-        return render(request, 'products/index.html')
+        return render(request, 'products/originals.html')
 
     original_products: list[Product] = None
     if (keywords
@@ -48,7 +48,7 @@ def get_origial_product(request):
 
     # Many products found should return the list so the user can choose the good one
     logging.info("Render a list of products found as original products")
-    return render(request, "products/index.html", {"original_products": original_products})
+    return render(request, "products/originals.html", {"original_products": original_products})
 
 
 def get_substitutes(request):
