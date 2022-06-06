@@ -74,52 +74,56 @@
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ms-auto my-2 my-lg-0">
 
-                        <li class="nav-item">
-                            <a class="nav-link caramel-mou" href="{% url 'accounts_account' %}">
-                                <img
-                                class="nav-img"
-                                src="static/images/user.png" 
-                                alt="Icone d'un utilisateur"
-                                title"Mon compte" />
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link caramel-mou" href="{% url 'products_favorites' %}">
-                                <img 
-                                class="nav-img"
-                                src="static/images/icon-carotte.png" 
-                                alt="Carotte qui goûte le contenu d'une louche"
-                                title"Mes aliments" />
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <div class="center-nav-text">
-                                    <a class="nav-link caramel-mou" href="{% url 'accounts_signup' %}">
-                                    S'inscrire
-                                    </a>
-                            </div>
-                            
-                        </li>
-
-                        <li class="nav-item">
-                            <div class="center-nav-text">
-                                <a class="nav-link caramel-mou" href="{% url 'accounts_login' %}">
-                                    Connexion
+                        {% if user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link caramel-mou" href="{% url 'accounts_account' %}">
+                                    <img
+                                    class="nav-img"
+                                    src="static/images/user.png" 
+                                    alt="Icone d'un utilisateur"
+                                    title"Mon compte" />
                                 </a>
-                            </div>
-                        </li>
+                            </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link caramel-mou" href="{% url 'accounts_logout' %}">
-                                <img 
-                                class="nav-img"
-                                src="static/images/logout.png" 
-                                alt="Logo flèche qui sort d'un rectangle et qui pointe vers la droite. Le tout dans un cercle noir"
-                                title"Déconnexion" />
-                            </a>
-                        </li>
+                            <li class="nav-item">
+                                <a class="nav-link caramel-mou" href="{% url 'products_favorites' %}">
+                                    <img 
+                                    class="nav-img"
+                                    src="static/images/icon-carotte.png" 
+                                    alt="Carotte qui goûte le contenu d'une louche"
+                                    title"Mes aliments" />
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link caramel-mou" href="{% url 'accounts_logout' %}">
+                                    <img 
+                                    class="nav-img"
+                                    src="static/images/logout.png" 
+                                    alt="Logo flèche qui sort d'un rectangle et qui pointe vers la droite. Le tout dans un cercle noir"
+                                    title"Déconnexion" />
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% if not user.is_authenticated %}
+                            <li class="nav-item">
+                                <div class="center-nav-text">
+                                        <a class="nav-link caramel-mou" href="{% url 'accounts_signup' %}">
+                                        S'inscrire
+                                        </a>
+                                </div>
+                                
+                            </li>
+
+                            <li class="nav-item">
+                                <div class="center-nav-text">
+                                    <a class="nav-link caramel-mou" href="{% url 'accounts_login' %}">
+                                        Connexion
+                                    </a>
+                                </div>
+                            </li>
+                        {% endif %}
 
                     </ul>
                 </div>
