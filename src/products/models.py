@@ -63,14 +63,12 @@ class Product (models.Model):
         otherwise False.
         The arg products is a list of instances of WellFormedProduct."""
 
-        ic()
         if not (    products
                     and isinstance(products, list)):
             return False
 
         is_new_product_added = False
         try:
-            ic()
             with transaction.atomic():  # Commit only if all queries have been done with success
                 for product in products:
                     try:

@@ -24,4 +24,4 @@ def populate_database(products: list, categories: set)->bool:
         print("No category added")
         return False
     print("in populate_database")
-    return Product.add_many(products, added_categories)
+    return Product.add_many(products)
