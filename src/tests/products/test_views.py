@@ -101,14 +101,20 @@ def test_get_substitutes(monkeypatch, caplog):
     with pytest.raises(Exception):
         response = client.get('/get-substitutes', {'id': '9995288', 'nutriscore_grade': "c"})
 
-    print("An original product")
-    print("     should return a list of products with a better  nutriscore_grade")
-    
-    caplog.clear()
+    print("An original product")    
     add_a_category()
     add_a_product()
     response = client.get('/get-substitutes', {'id': '1', 'nutriscore_grade': "c"})
-    print()
-    print()
+    
+    print("     should return a context that contains a list of products")
+    print("         with a better  nutriscore_grade")
     for product in response.context["substitute_products"]:
         assert product["nutriscore_grade"] < "c"
+
+    print("         orded by weight (from the heaviest to the lightest)")
+    
+    substitute_products = response.context["substitute_products"]
+    assert (substitute_products[0]["weight"] > substitute_products[-1]["weight"])
+
+    print("     should return a context that contains the original product")
+    assert response.context["original_product"] == Product.objects.get(id=1)

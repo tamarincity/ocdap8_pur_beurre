@@ -66,7 +66,9 @@ def get_substitutes(request):
     original_product = Product.objects.get(id=original_product_id)
     
     return render(request,
-        "products/substitutes.html", {"substitute_products": substitute_products})
+        "products/substitutes.html", {
+            "substitute_products": substitute_products,
+            "original_product": original_product})
 
 
 @login_required

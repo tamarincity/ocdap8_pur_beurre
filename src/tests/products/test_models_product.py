@@ -52,7 +52,7 @@ pytestmark = pytest.mark.django_db
 categories_dict = {} # keys will be names, values will be instances of Category
 
 @pytest.fixture
-def categories_as_dict():
+def store_categories_in_db():
      # Create categories from the attribute 'categories' of each downloaded product
      # so that a product can be added to the database and get included in a stored category
     categories = set(
@@ -66,47 +66,39 @@ def categories_as_dict():
     return categories_dict
 
 @pytest.fixture
-def add_products_to_db(categories_as_dict):  
-    SUT.add_many(welformed_products, categories_as_dict)
+def add_products_to_db(store_categories_in_db):  
+    SUT.add_many(welformed_products)
 
 
 class TestProductModel:
-
-    def test_add_many(self, caplog, categories_as_dict):
+    @pytest.mark.test_me
+    def test_add_many(self, caplog, store_categories_in_db):
         caplog.clear()
+
+        # Store categories in the db
+        # so that it is possible to add products and relies them to categories
+        store_categories_in_db
 
         print("A list of elements that are not instances of WellFormedProduct should raise "
             " an exception and return False because the product can't be stored in the database.")
         assert SUT.add_many(
-            ["not", "list", "of", "instance", "of", "WellFormedProduct"],
-            categories_as_dict
-            ) == False
+            ["not", "list", "of", "instance", "of", "WellFormedProduct"]) == False
         assert caplog.text != None
         caplog.clear()
 
-        print("Stored_categories that is not a dict with instances of Category as values "
-            "should return False because the product can't be stored in the database.")
-        assert SUT.add_many(
-            welformed_products,
-            {"cat1": "cat1", "cat2": "cat2", "cat3": "cat3", "cat4": "cat4", "cat5": "cat5"},
-            ) == False
-        assert caplog.text == ""
-
-        print("A list of welformed products and a dict containing categories that are already stored "
+        print("A list of welformed products that are already stored "
             "in the database should store all of the products then return True.")
         assert SUT.add_many(
-            welformed_products,
-            categories_as_dict
-            ) == True
+            welformed_products) == True
         
         assert SUT.objects.all().count() == 5
 
 
     def test_find_original_products(self, add_products_to_db):
 
-        categories_as_dict   # To create categories_dict
+        store_categories_in_db   # To create categories_dict
 
-        print("Have the products been added to the database?: ", SUT.add_many(welformed_products, categories_dict))   
+        print("Have the products been added to the database?: ", SUT.add_many(welformed_products))   
 
         print(
             "'beverage' as keyword should return all products containing the keyword 'beverage'")

@@ -5,6 +5,8 @@ from django.db import connection, models
 from django.db import transaction
 from django.db.models import Q
 
+from icecream import ic
+
 from accounts.models import Customer
 
 from products.utils import WellFormedProduct
@@ -56,25 +58,19 @@ class Product (models.Model):
         return self.name
 
     @classmethod
-    def add_many(cls, products: list[WellFormedProduct], stored_categories: dict)-> bool:
+    def add_many(cls, products: list[WellFormedProduct])-> bool:
         """Add products to the database then return True if they were added successfully
         otherwise False.
-        The arg products is a list of instances of WellFormedProduct.
-        The arg stored_categories contain the names of the categories as keys 
-        and the corresponding instances as values"""
+        The arg products is a list of instances of WellFormedProduct."""
 
+        ic()
         if not (    products
-                    and stored_categories
-                    and isinstance(products, list)
-                    and isinstance(stored_categories, dict)):
-
+                    and isinstance(products, list)):
             return False
-        for value in stored_categories.values():
-            if not isinstance(value, Category):
-                return False
 
         is_new_product_added = False
         try:
+            ic()
             with transaction.atomic():  # Commit only if all queries have been done with success
                 for product in products:
                     try:
