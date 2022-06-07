@@ -43,7 +43,7 @@ def get_origial_product(request):
     if original_products and len(original_products) == 1:
         logging.info("Redirect to get_substitutes")
         return redirect(
-            reverse('products/get_substitutes')
+            reverse('products_get_substitutes')
             + f'?id={original_products[0].id}'
             f'&nutriscore_grade={original_products[0].nutriscore_grade}')
 

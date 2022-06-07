@@ -3,9 +3,21 @@
 
 {% block content %}
 
-    <br/>
-    <br/>
-    <br/>
+    <div class="product-banner" style="background-image: url('{{ original_product.image_url }}'">
+        <div class="product-banner-overlay">
+
+
+                        
+                        <div class="flex">
+                            <div class="product-name">
+                                {{ original_product.name }}
+                            </div>
+                        </div>
+
+
+            <br/>
+        </div>
+    </div>
 
     <div>
         <hr/>
@@ -13,26 +25,25 @@
             <div class="row g-0">
                     {% for product in substitute_products %}        
                         <div class="col-lg-4">
-                            <form action = "get-substitutes" method="get">
+                            <form action = "product_details" method="get">
                                 <button class="product-as-button" type="submit">
-                                    <input type="hidden" name="nutriscore_grade" value="{{product.nutriscore_grade}}" />
-                                    <input 
-                                        type="text"
-                                        name="id"
-                                        value="{{ product.id }}"
-                                        hidden/>
+                                    <input type="hidden" name="original_id" value="{{original_product.id}}"/>
+                                    <input type="hidden" name="substitute_id" value="{{product.id}}"/>
 
                                     <!-- Picture -->
                                     <div class="one-row">
                                         <div class="w-33pc"></div>
                                         <div class="w-33pc">
                                             <div class="one-row">
-                                            <img src="{{product.image_thumb_url}}" />
-                                            <img
-                                                class="mini-nutriscore"
-                                                src="static/images/nutriscore_{{product.nutriscore_grade}}.jpg"
-                                                alt="Nutriscore: {{product.nutriscore_grade}}"
-                                                title="{{product.name}}" />
+                                                <img 
+                                                    src="{{product.image_thumb_url}}"
+                                                    alt="{{product.name}}"
+                                                    title="{{product.name}}" />
+                                                <img
+                                                    class="mini-nutriscore"
+                                                    src="static/images/nutriscore_{{product.nutriscore_grade}}.jpg"
+                                                    alt="Nutriscore: {{product.nutriscore_grade|upper}}"
+                                                    title="Nutriscore: {{product.nutriscore_grade|upper}}" />
                                             </div>
                                         </div>
 
@@ -42,9 +53,30 @@
                                     <!-- Summary -->
                                     <center>{{product.name}}</center><br />
                                     <center>Marque: {{product.brands}}</center><br />
-                                </button><br/>
+                                </button>    
                             </form>
+                            <form action="add_to_favorites" method="post">
+                                <input type="hidden" name="original_id" value="{{original_product.id}}"/>
+                                <input type="hidden" name="substitute_id" value="{{product.id}}"/>
+                                <button class"product-as-button" type="submit" style="background-color: white !important;">
+                                    <div class="one-row">
+                                        <img
+                                            src="static/images/arrow_right_black.png"
+                                            alt="Flèche vers la une carotte"
+                                            title="Enregistrer dans mes aliments"
+                                            class="img-to-my-fav" />
+                                        <img
+                                            src="static/images/carotte_server.png"
+                                            alt="Carotte vivante qui porte un plateau sous cloche"
+                                            title="Enregistrer dans mes aliments"
+                                            class="img-to-my-fav" />
+                                        <span>Ajouter à mes aliments</span>
+                                    </div>
+                                </button>
+                            </form>
+                            <br/><br/><br/>                                
                         </div>
+                        
                     {% endfor %}
                 </div>
             </div>

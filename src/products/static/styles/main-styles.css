@@ -62,6 +62,7 @@
   --bs-body-line-height: 1.5;
   --bs-body-color: #212529;
   --bs-body-bg: #fff;
+  --bs-biscuit-trempe: #E8A75D;
 }
 
 *,
@@ -74,6 +75,10 @@
   :root {
     scroll-behavior: smooth;
   }
+}
+
+button {
+  border: 0;
 }
 
 body {
@@ -196,6 +201,45 @@ width: 33.333333%;
 .product-as-button {
   width: 100%; background-color: #fff;
   border: 0;
+}
+
+.product-banner {
+  position: relative;
+  margin-top: 9rem;
+  height: 20vh;
+  background: linear-gradient(to bottom, rgba(92, 77, 66, 0.8) 0%, rgba(92, 77, 66, 0.8) 100%);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+  background-size: cover;
+}
+
+.product-banner-overlay {
+  position: absolute;
+  height: 20vh;
+  width: 100%;
+  top: 0;
+  background: linear-gradient(to bottom, rgba(92, 77, 66, 0.8) 0%, rgba(92, 77, 66, 0.8) 100%);
+}
+
+.product-name {
+  background-color: var(--bs-biscuit-trempe);
+  margin: auto;
+  padding: 0.8rem 0.8rem;
+  font-weight: bold;
+}
+
+.flex {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 20vh;
+  max-height: 25vh;
+}
+
+.img-to-my-fav {
+  height: 3rem;
 }
 
 @media (min-width: 1200px) {
