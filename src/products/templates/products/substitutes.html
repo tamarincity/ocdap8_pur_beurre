@@ -1,44 +1,54 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demo</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-    <div>
-        <form action = "get-origial-product" method="get">
-        Produit à remplacer :
-        <input 
-            type="text"
-            name="keywords_of_original_product"
-            placeholder="Mots clefs ou code bar">
-        <br><br>
-        <input type="submit" />
-    </form><br>
-    </div>
+
+{% block content %}
+
+    <br/>
+    <br/>
+    <br/>
 
     <div>
         <hr/>
-        {% for product in substitute_products %}
-        <form action = "get-substitutes" method="get">
-            <button type="submit" style="width: 100%;">
-                <input type="hidden" name="nutriscore_grade" value="{{product.nutriscore_grade}}" />
-                <input 
-                    type="text"
-                    name="id"
-                    value="{{ product.id }}"
-                    hidden/>
-                <center>{{product.name}}</center><br />
-                <center>Marque: {{product.brands}}</center><br />
-                <center><img src="{{product.image_thumb_url}}" /></center>
-                <center>Nutriscore: {{product.nutriscore_grade}}</center>
-            </button><br/>
-        </form>
-        {% endfor %}
+        <div class="container-fluid p-0">
+            <div class="row g-0">
+                    {% for product in substitute_products %}        
+                        <div class="col-lg-4">
+                            <form action = "get-substitutes" method="get">
+                                <button class="product-as-button" type="submit">
+                                    <input type="hidden" name="nutriscore_grade" value="{{product.nutriscore_grade}}" />
+                                    <input 
+                                        type="text"
+                                        name="id"
+                                        value="{{ product.id }}"
+                                        hidden/>
+
+                                    <!-- Picture -->
+                                    <div class="one-row">
+                                        <div class="w-33pc"></div>
+                                        <div class="w-33pc">
+                                            <div class="one-row">
+                                            <img src="{{product.image_thumb_url}}" />
+                                            <img
+                                                class="mini-nutriscore"
+                                                src="static/images/nutriscore_{{product.nutriscore_grade}}.jpg"
+                                                alt="Nutriscore: {{product.nutriscore_grade}}"
+                                                title="{{product.name}}" />
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+                                    <!-- Summary -->
+                                    <center>{{product.name}}</center><br />
+                                    <center>Marque: {{product.brands}}</center><br />
+                                </button><br/>
+                            </form>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
     </div>
 
-</body>
-</html>
+{% endblock %}

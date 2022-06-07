@@ -2,7 +2,7 @@ from django.test import Client
 
 import pytest
 
-from products.models import Product
+from products.models import Category, Product
 import src.products.views as SUT
 
 
@@ -46,14 +46,35 @@ substitutes_list2 = [
     "name": "substitute product name 3",
     "weight": 2}]
 
-@pytest.mark.django_db
 
+def add_a_category():
+    return Category.objects.create(name="Category name")
+
+
+def add_a_product():
+    return Product.objects.create(
+        name="Product name",
+        brands="brand1, brand2",
+        code=8714100614754,
+        original_id=9876543210,
+        quantity="Quantity 1.5l",
+        image_thumb_url="url-thumb-image",
+        image_url="url-thumb-image",
+        ingredients_text="list of ingredients",
+        keywords="some keywords (mega key_words)",
+        nutriments="Some nutriments",
+        nutriscore_grade="c",
+        stores="All the stores where you can find the product",
+        url="url_of_the_website_of_the_product",
+    )
+
+@pytest.mark.django_db
 @pytest.mark.test_me
 def test_get_substitutes(monkeypatch, caplog):
+    caplog.clear()
 
     def mock_find_substitute_products(id, nutriscore_grade):
         try:
-            print("Dans le mock")
             if not (id
                     and isinstance(id, str)):
                 raise Exception("id must be string and not empty")
@@ -76,10 +97,17 @@ def test_get_substitutes(monkeypatch, caplog):
     
     monkeypatch.setattr(Product, "find_substitute_products", mock_find_substitute_products)
 
+    print("An original product id that doesn't exist should raise an exception")
+    with pytest.raises(Exception):
+        response = client.get('/get-substitutes', {'id': '9995288', 'nutriscore_grade': "c"})
+
     print("An original product")
     print("     should return a list of products with a better  nutriscore_grade")
-    # assert "Render a list of substitute_products with better nutriscore_grade" in caplog.text
-    response = client.get('/get-substitutes', {'id': '123456', 'nutriscore_grade': "c"})
+    
+    caplog.clear()
+    add_a_category()
+    add_a_product()
+    response = client.get('/get-substitutes', {'id': '1', 'nutriscore_grade': "c"})
     print()
     print()
     for product in response.context["substitute_products"]:

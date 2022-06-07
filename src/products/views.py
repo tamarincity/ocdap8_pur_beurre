@@ -57,12 +57,14 @@ def get_substitutes(request):
     original product ID.
     """
 
-    id = request.GET.get("id")
+    original_product_id = request.GET.get("id")
     nutriscore_grade = request.GET.get("nutriscore_grade")
 
     substitute_products = Product.find_substitute_products(
-        id, nutriscore_grade)
-    logging.info("Render a list of substitute_products with better nutriscore_grade")
+        original_product_id, nutriscore_grade)
+    
+    original_product = Product.objects.get(id=original_product_id)
+    
     return render(request,
         "products/substitutes.html", {"substitute_products": substitute_products})
 

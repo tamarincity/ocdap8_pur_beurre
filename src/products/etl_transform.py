@@ -6,6 +6,7 @@ from icecream import ic
 from products.utils import WellFormedProduct
 from products import utils
 from .constants import (
+    KIND_OF_BISCUITS,
     PRODUCT_NAME_MAX_LENGTH,
     QUANTITY_MAX_LENGTH,
     UNWANTED_CATEGORIES,
@@ -87,6 +88,18 @@ def transform_product(product: WellFormedProduct) -> WellFormedProduct or None:
         product.categories_old.replace("Aliments et boissons ", "")
             .replace(" & ", " et ")
             .replace("&", " et "))
+
+    categories_as_string = " " + categories_as_string + " "
+    
+    for biscuit in KIND_OF_BISCUITS:
+        if (biscuit in product.categories_old
+                or biscuit in product._keywords
+                or biscuit in product.product_name_fr):
+
+            if "Biscuit " not in categories_as_string:
+                categories_as_string += f", Biscuit "
+            if "Biscuits " not in categories_as_string:
+                categories_as_string += f", Biscuits "
 
     categories_as_list = str_to_list(categories_as_string)    
     if not categories_as_list:        

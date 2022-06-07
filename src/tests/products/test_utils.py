@@ -57,7 +57,6 @@ def test_format_quantity_and_unit(monkeypatch, caplog):
         " ")
 
     def mock_remove_space_between_quantity_and_unit(text_as_arg):
-        print("Dans le mock !!!!!!!!!!!!!!!!!!")
         if not (    text_as_arg
                     and isinstance(text_as_arg, str)):
 

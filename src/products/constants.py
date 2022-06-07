@@ -1,4 +1,14 @@
 ETL_EXTRACT_MAX_WORKERS = 10
+KIND_OF_BISCUITS = [
+    "Biscuits", "Biscuit",
+    "biscuits", "biscuit",
+    "Boudoirs", "Boudoir",
+    "boudoirs", "boudoir",
+    "Gaufres", "Gaufre",
+    "gaufres", "gaufre",
+    "Gaufrettes", "Gaufrette",
+    "gaufrettes", "gaufrette",]
+
 MAX_NBR_OF_SUBSTITUTE_PRODUCTS = 10
 NBR_OF_PAGES = 4
 PAGE_NBR_FOR_EXTRACTION_FILENAME = 'page_nbr.txt'
