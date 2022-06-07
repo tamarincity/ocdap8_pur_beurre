@@ -3,6 +3,7 @@ import logging
 from django.shortcuts import redirect, render
 from django.http import JsonResponse
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 
 from products.models import Product
 from products import utils
@@ -66,6 +67,7 @@ def get_substitutes(request):
         "products/substitutes.html", {"substitute_products": substitute_products})
 
 
+@login_required
 def get_all_favorites(request):
     return render(request, "products/favorites.html")
 
@@ -76,4 +78,3 @@ def legal_notice(request):
 
 def contact(request):
     return render(request, "products/contact.html")
-    
