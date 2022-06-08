@@ -3,29 +3,33 @@
 
 {% block content %}
 
+    <!-- Banner with product picture as background -->
     <div class="product-banner" style="background-image: url('{{ original_product.image_url }}'">
         <div class="product-banner-overlay">
-
-
-                        
-                        <div class="flex">
-                            <div class="product-name">
-                                {{ original_product.name }}
-                            </div>
-                        </div>
-
-
+                <div class="flex">
+                    <div class="product-name">
+                        {{ original_product.name }}
+                    </div>
+                </div>
             <br/>
         </div>
     </div>
 
     <div>
         <hr/>
+
+        <center>
+            <h3>Vous pouvez remplacer cet aliment par:</h3>
+            <p>(Cliquez sur une image pour voir les détails)</p>
+            <br/><br/>
+        </center>
+        <!-- List of products -->
         <div class="container-fluid p-0">
             <div class="row g-0">
                     {% for product in substitute_products %}        
                         <div class="col-lg-4">
-                            <form action = "product_details" method="get">
+                            <!-- Go to details if picture is clicked -->
+                            <form action = "products_details" method="get">
                                 <button class="product-as-button" type="submit">
                                     <input type="hidden" name="original_id" value="{{original_product.id}}"/>
                                     <input type="hidden" name="substitute_id" value="{{product.id}}"/>
@@ -35,10 +39,12 @@
                                         <div class="w-33pc"></div>
                                         <div class="w-33pc">
                                             <div class="one-row">
+                                                <!-- Picture of the product -->
                                                 <img 
                                                     src="{{product.image_thumb_url}}"
                                                     alt="{{product.name}}"
                                                     title="{{product.name}}" />
+                                                <!-- Picture of the nutriscore grade -->
                                                 <img
                                                     class="mini-nutriscore"
                                                     src="static/images/nutriscore_{{product.nutriscore_grade}}.jpg"
@@ -50,12 +56,15 @@
 
                                     </div>
 
-                                    <!-- Summary -->
+                                    <!-- Product name and brand -->
                                     <center>{{product.name}}</center><br />
                                     <center>Marque: {{product.brands}}</center><br />
                                 </button>    
                             </form>
-                            <form action="add_to_favorites" method="post">
+
+                            <!-- Add original and substitutes to favotites -->
+                            <center>
+                            <form action="products_add_to_favorites" method="post">
                                 <input type="hidden" name="original_id" value="{{original_product.id}}"/>
                                 <input type="hidden" name="substitute_id" value="{{product.id}}"/>
                                 <button class"product-as-button" type="submit" style="background-color: white !important;">
@@ -70,11 +79,13 @@
                                             alt="Carotte vivante qui porte un plateau sous cloche"
                                             title="Enregistrer dans mes aliments"
                                             class="img-to-my-fav" />
-                                        <span>Ajouter à mes aliments</span>
+                                        <span class="center-text-vertically">Ajouter à mes aliments</span>
                                     </div>
                                 </button>
                             </form>
-                            <br/><br/><br/>                                
+                            </center>
+                            <br/><br/><br/>
+
                         </div>
                         
                     {% endfor %}

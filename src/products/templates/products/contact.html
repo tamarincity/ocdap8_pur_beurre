@@ -20,32 +20,44 @@
 
         <div class="row gx-4 gx-lg-5 justify-content-center mb-5">
             <div class="col-lg-6">
-                <form id="contactForm" method="post" action="#" >
+                <form id="contactForm" method="post" action="get-message" >
                     {% csrf_token %}
+
+                    {% if messages %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for message in messages %}
+                                {{ message }}
+                            {% endfor %}
+                        </div>                            
+                    {% endif%}
                     <!-- FirstName input-->
                     <div class="form-floating mb-3">
-                        <input class="form-control" id="firstname" type="text" placeholder="Prénom NOM" required />
+                        <input class="form-control" id="firstname" name="firstname" type="text" placeholder="Prénom NOM" required
+                        value="{{ firstname }}"/>
                         <label for="firstname">Prénom</label>
                     </div>
                     <!-- Lastname input-->
                     <div class="form-floating mb-3">
-                        <input class="form-control" id="name" type="text" placeholder="NOM" required />
+                        <input class="form-control" id="lastname" name="lastname" type="text" placeholder="NOM" required
+                        value="{{ lastname }}"/>
                         <label for="lastname">NOM</label>
                     </div>
                     <!-- Email address input-->
                     <div class="form-floating mb-3">
-                        <input class="form-control" id="email" type="email" placeholder="un@exemple.com" required />
+                        <input class="form-control" id="email" name="email" type="email" placeholder="un@exemple.com" required
+                        value="{{ email }}"/>
                         <label for="email">Addresse email</label>
                     </div>
                     <!-- Phone number input-->
                     <div class="form-floating mb-3">
-                        <input class="form-control" id="phone" type="tel" placeholder="(123) 456-7890" />
+                        <input class="form-control" id="phone_number" name="phone_number" type="tel" placeholder="(123) 456-7890" required
+                        value="{{ phone_number }}"/>
                         <label for="phone">Numéro de téléphone</label>
                     </div>
                     <!-- Message input-->
                     <div class="form-floating mb-3">
-                        <textarea class="form-control" id="message" type="text" placeholder="Entrez votre message ici." 
-                                    style="height: 10rem" required></textarea>
+                        <textarea class="form-control" id="message" name="message" type="text" placeholder="Entrez votre message ici." 
+                                    style="height: 10rem" required>{{ message }}</textarea>
                         <label for="message">Message</label>
                     </div>
 

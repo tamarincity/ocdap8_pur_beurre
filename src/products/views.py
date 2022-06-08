@@ -4,14 +4,95 @@ from django.shortcuts import redirect, render
 from django.http import JsonResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
-from products.models import Product
+
+from products.models import Product, ReceivedMessage
 from products import utils
 
 
 # Create your views here.
 def home(request):
     return render(request, 'products/home.html')
+
+def check_email(email):
+    if not ("@" in email and "." in email):
+        return False
+    
+    right_part = email.split("@")[1]
+
+    if not "." in right_part:
+        return False
+
+    return True
+
+
+def contact(request):
+    return render(request, "products/contact.html")
+
+
+@login_required
+def get_all_favorites(request):
+    return render(request, "products/favorites.html")
+
+
+def get_message(request):
+
+    list(messages.get_messages(request))  # Clear all system messages
+
+    firstname = request.POST.get('firstname', "")
+    lastname = request.POST.get('lastname', "")
+    email = request.POST.get('email', "")
+    phone_number = request.POST.get('phone_number', "")
+    message = request.POST.get('message', "")
+
+    context = {
+                "firstname": firstname,
+                "lastname": lastname,
+                "email": email,
+                "phone_number": phone_number,
+                "message": message,}
+
+    print("email: ", email)
+
+    is_email_well_formed = check_email(email)
+    if not is_email_well_formed:
+        messages.success(request, ("Le champ email est incorrect !"))
+        return render(request, 'products/contact.html', context)
+
+    if not (
+            firstname
+            and lastname
+            and email
+            and phone_number
+            and message
+            and isinstance(firstname, str)
+            and isinstance(lastname, str)
+            and isinstance(email, str)
+            and isinstance(phone_number, str)
+            and isinstance(message, str)):
+
+        
+
+        messages.success(request, ("Tous les champs doivent être remplis !"))
+        return render(request, 'products/contact.html', context)
+    
+    try:
+        ReceivedMessage.objects.create(
+            firstname=firstname,
+            lastname=lastname,
+            email=email,
+            phone_number=phone_number,
+            message=message)
+        
+        messages.success(request, ("Votre message a bien été reçu. Il sera traité dans les plus brefs délais."))
+    except Exception as e:
+        logging.error(f"Unable to add the customer. Reason: {str(e)}")
+        messages.success(request, (
+            "Malheureusement, une erreur du système est survenue. Le message n'a pas pu être reçu !"
+            " Veuillez ré-essayer plus tard. Merci"))
+
+    return render(request, 'products/message_received.html')
 
 
 def get_origial_product(request):
@@ -71,14 +152,16 @@ def get_substitutes(request):
             "original_product": original_product})
 
 
-@login_required
-def get_all_favorites(request):
-    return render(request, "products/favorites.html")
-
-
 def legal_notice(request):
     return render(request, "products/legal_notice.html")
 
 
-def contact(request):
-    return render(request, "products/contact.html")
+def details(request):
+    original_product = Product.objects.get(id=request.GET.get('original_id'))
+    substitute_product = Product.objects.get(id=request.GET.get('substitute_id'))
+
+    print("nutriments: ", substitute_product.nutriments)
+    print("salt: ", substitute_product.nutriments.get("salt_100g"))
+    return render(request, "products/details.html",
+        context={'original_product': original_product,
+                'substitute_product': substitute_product})
