@@ -8,7 +8,7 @@
     <br/>
     <br/>
     <br/>
-    <section class="thin-section" id="contact">
+    <header class="thin-section" id="contact">
         <div class="container px-4 px-lg-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
                 <div class="col-lg-8 col-xl-6 text-center">
@@ -16,14 +16,27 @@
                         class="height_10rem"
                         src="static/images/remy.jpg" 
                         alt="Rémy le rat du dessin animé Ratatouille, une cuillère en bois à la main" 
-                        title="Voici le formulaire de contact." />
+                        title="Choisissez dans la liste ci-dessous le produit que vous voulez remplacer." />
                     <h2 class="mt-0">Choisissez dans la liste ci-dessous le produit que vous voulez remplacer.</h2>
                     <hr class="divider" />
                 </div>
             </div>
         </div>
         <hr/>
-    </section>
+    </header>
+
+    <!-- Message from system -->
+    <center>
+        <div class="col-lg-6">
+                {% if messages %}
+                    <div class="alert alert-danger" role="alert">
+                        {% for message in messages %}
+                            {{ message }}
+                        {% endfor %}
+                    </div>            
+                {% endif%}
+            </div>
+    </center>
 
     <!-- List of original products -->
     <section>        
@@ -46,20 +59,20 @@
                                         <div class="w-33pc">
                                             <div class="one-row">
                                             <!-- picture -->
-                                            <img src="{{product.image_thumb_url}}" />
+                                            <img src="{{product.image_thumb_url}}" alt="{{product.name}}" title="{{product.name}}" />
                                             <!-- Nutriscore grade -->
                                             <img
                                                 class="mini-nutriscore"
                                                 src="static/images/nutriscore_{{product.nutriscore_grade}}.jpg"
-                                                alt="Nutriscore: {{product.nutriscore_grade}}"
-                                                title="{{product.name}}" />
+                                                alt="Nutriscore: {{product.nutriscore_grade|upper}}"
+                                                title="Nutriscore: {{product.nutriscore_grade|upper}}" />
                                             </div>
                                         </div>
                                     </div>
 
                                     <!-- Product name and brand -->
-                                    <center>{{product.name}}</center>
-                                    <center>Marque: {{product.brands}}</center><br />
+                                    <div class="h-marge" >{{product.name}}</div>
+                                    <div class="h-marge" >Marque: {{product.brands}}</div><br />
                                 </button><br/>
                             </form>
                         </div>

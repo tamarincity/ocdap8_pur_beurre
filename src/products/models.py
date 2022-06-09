@@ -262,7 +262,7 @@ class L_Favorite (models.Model):
 
     #Methods
     def __str__(self):
-        return f"{self.original_product}/{self.substitue_product} ({self.customer})"
+        return f"{self.original_product}/{self.substitute_product} ({self.customer})"
 
 
 class Category(models.Model):

@@ -1,3 +1,4 @@
+from email.mime import message
 import logging
 
 from django.shortcuts import redirect, render
@@ -5,9 +6,10 @@ from django.http import JsonResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Q
 
 
-from products.models import Product, ReceivedMessage, L_Favorite
+from products.models import Product, ReceivedMessage, L_Favorite, Customer
 from products import utils
 
 
@@ -39,7 +41,8 @@ def add_to_favorites(request):
                 original_product_id=original_id,
                 substitute_product_id=substitute_id)
             
-            return redirect('products_favorites')
+            messages.success(request, ("Ce produit a bien été enregistrer dans vos aliments préférés."))
+            return redirect(request.META['HTTP_REFERER'])
     
         except Exception as e:
             logging.error(f"Failed to create favorites! Reason: {str(e)}")
@@ -69,7 +72,22 @@ def contact(request):
 
 @login_required
 def get_all_favorites(request):
-    return render(request, "products/favorites.html")
+    user_id = request.GET.get('user_id', "")
+
+    favorites_rows = L_Favorite.objects.all().filter(customer_id=user_id)
+
+    favorite_ids = set(row.substitute_product_id for row in favorites_rows)
+
+    favorite_products = Product.objects.filter(id__in=favorite_ids)    
+
+    if len(favorite_products) == 0:
+        messages.success(request,("Il n'y a pas encore de produits enregistrés dans vos aliments."))
+        return render(request, "products/favorites.html")
+
+    context = {'favorite_products': favorite_products}
+
+    return render(request, "products/favorites.html", context)
+
 
 
 def get_message(request):
@@ -140,6 +158,7 @@ def get_origial_product(request):
     Otherwise, we return a list of original products that match the keywords. This
     way, the user can choose the right original product.
     """
+    
     try:
         keywords = request.GET['keywords_of_original_product']
     except Exception as e:        
@@ -152,9 +171,10 @@ def get_origial_product(request):
 
         keywords = utils.format_text(keywords)
         original_products = Product.find_original_products(keywords)
-
-    if not original_products:
+        
+    if len(original_products) == 0:
         logging.info("No original products found!")
+        messages.success(request, ("Aucun produit trouvé ! Essayez avec d'autres mots-clefs."))
 
     # If there is only one original product found then should redirect to get substitutes
     if original_products and len(original_products) == 1:
@@ -179,6 +199,10 @@ def get_substitutes(request):
 
     substitute_products = Product.find_substitute_products(
         original_product_id, nutriscore_grade)
+
+    if len(substitute_products) == 0:
+        logging.info("No original products found!")
+        messages.success(request, ("Il n'y a pas de meilleurs produit qui soit similaire"))
     
     original_product = Product.objects.get(id=original_product_id)
     
