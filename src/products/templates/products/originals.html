@@ -22,10 +22,11 @@
                 </div>
             </div>
         </div>
-    </section>
-    <div>
         <hr/>
-        
+    </section>
+
+    <!-- List of original products -->
+    <section>        
         <div class="container-fluid p-0">
             <div class="row g-0">
                     {% for product in original_products %}        
@@ -39,12 +40,14 @@
                                         value="{{ product.id }}"
                                         hidden/>
 
-                                    <!-- Picture -->
+                                    <!-- Picture and nutriscore grade-->
                                     <div class="one-row">
                                         <div class="w-33pc"></div>
                                         <div class="w-33pc">
                                             <div class="one-row">
+                                            <!-- picture -->
                                             <img src="{{product.image_thumb_url}}" />
+                                            <!-- Nutriscore grade -->
                                             <img
                                                 class="mini-nutriscore"
                                                 src="static/images/nutriscore_{{product.nutriscore_grade}}.jpg"
@@ -52,12 +55,10 @@
                                                 title="{{product.name}}" />
                                             </div>
                                         </div>
-
-
                                     </div>
 
-                                    <!-- Summary -->
-                                    <center>{{product.name}}</center><br />
+                                    <!-- Product name and brand -->
+                                    <center>{{product.name}}</center>
                                     <center>Marque: {{product.brands}}</center><br />
                                 </button><br/>
                             </form>
@@ -65,7 +66,6 @@
                     {% endfor %}
                 </div>
             </div>
-
-    </div>
+    </section>
 
 {% endblock %}

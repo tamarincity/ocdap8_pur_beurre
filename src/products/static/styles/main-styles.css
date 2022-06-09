@@ -190,6 +190,11 @@ h1, .h1 {
   padding: 1rem 0;
 }
 
+footer {
+  padding-top: 1rem;
+  padding-bottom: 20vh;
+}
+
 .w-33pc {
 width: 33.333333%;
 }
@@ -201,6 +206,12 @@ width: 33.333333%;
 .product-as-button {
   width: 100%; background-color: #fff;
   border: 0;
+}
+
+.button-add-to-fav {
+  width: 100%; border-color: #000 !important;
+  border: 1px solid !important;
+  border-radius: 0.5rem;
 }
 
 .product-banner {
@@ -272,6 +283,20 @@ width: 33.333333%;
 
 .h-marge {
   width: 80%;
+}
+
+.margin-top-20 {
+  margin-top: 20px;
+}
+
+header.masthead-h-25 {
+  height: 32vh;
+  padding-top: 4.5rem;
+  padding-bottom: 0;
+}
+
+header.masthead-h-25 {
+  background: linear-gradient(to bottom, rgba(92, 77, 66, 0.8) 0%, rgba(92, 77, 66, 0.8) 100%), url("../images/black_table_with_food.png");
 }
 
 @media (min-width: 1200px) {
@@ -7143,6 +7168,10 @@ textarea.form-control-lg {
   min-width: 100vw !important;
 }
 
+.h-20 {
+  height: 20% !important;
+}
+
 .h-25 {
   height: 25% !important;
 }
@@ -11557,15 +11586,19 @@ hr.divider-light {
   }
 }
 
-header.masthead {
+header.masthead header.masthead-h-25 {
   padding-top: 10rem;
   padding-bottom: calc(10rem - 4.5rem);
-  background: linear-gradient(to bottom, rgba(92, 77, 66, 0.8) 0%, rgba(92, 77, 66, 0.8) 100%), url("../images/bg-masthead.jpg");
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: scroll;
   background-size: cover;
 }
+
+header.masthead {
+  background: linear-gradient(to bottom, rgba(92, 77, 66, 0.8) 0%, rgba(92, 77, 66, 0.8) 100%), url("../images/bg-masthead.jpg");
+}
+
 header.masthead h1, header.masthead .h1 {
   font-size: 2.25rem;
 }

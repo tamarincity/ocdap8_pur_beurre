@@ -1,8 +1,12 @@
+import logging
+
 from django.contrib.auth import get_user_model, login, logout, authenticate
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.contrib import messages
 from django.shortcuts import render, redirect
+
+from accounts.models import Customer
 
 
 User = get_user_model()
@@ -66,7 +70,8 @@ def signup_user(request):
 
         try:
             # Creation of the user
-            user = User.objects.create_user(username=username, password=password, email=username)
+            user = User.objects.create_user(
+                username=username[:150], password=password, email=username[:150])
 
             # User connection
             login(request, user)
@@ -82,4 +87,34 @@ def signup_user(request):
 
 
 def account(request):
-    return render(request,"accounts/account.html")
+    username = request.POST.get('username', '')
+    first_name = request.POST.get('first_name', "")
+    last_name = request.POST.get('last_name', "")
+    is_submit_button_clicked = request.POST.get('is_submit_button_clicked', "")
+
+    context = {"first_name": first_name, "last_name": last_name}
+
+    print()
+    print()
+    print("username: ", username)
+    print()
+    print()
+    print()
+
+    try:
+        if is_submit_button_clicked and username:
+            (Customer.objects.filter(username=username)
+                .update(first_name=first_name, last_name=last_name))
+
+        
+            messages.success(request, ("Votre compte a bien été mis à jour"))
+
+    except Exception as e:
+        logging.error(f"Unable to update account. Reason: {str(e)}")
+        messages.success(request, (
+            "Malheureusement une erreur du système est survenue. "
+            "Les données n'ont pas pu être mises à jour. "
+            "Merci de ré-essayez plus tard."))
+        return False
+
+    return render(request,"accounts/account.html", context=context)

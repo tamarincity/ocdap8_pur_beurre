@@ -160,8 +160,6 @@ def details(request):
     original_product = Product.objects.get(id=request.GET.get('original_id'))
     substitute_product = Product.objects.get(id=request.GET.get('substitute_id'))
 
-    print("nutriments: ", substitute_product.nutriments)
-    print("salt: ", substitute_product.nutriments.get("salt_100g"))
     return render(request, "products/details.html",
         context={'original_product': original_product,
                 'substitute_product': substitute_product})
