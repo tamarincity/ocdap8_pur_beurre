@@ -7,13 +7,49 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 
-from products.models import Product, ReceivedMessage
+from products.models import Product, ReceivedMessage, L_Favorite
 from products import utils
 
 
 # Create your views here.
 def home(request):
     return render(request, 'products/home.html')
+
+def add_to_favorites(request):
+    is_submit_button_clicked = request.POST.get('is_submit_button_clicked', "")
+    original_id = request.POST.get('original_id', "")
+    substitute_id = request.POST.get('substitute_id', "")
+    user_id = request.POST.get('user_id', "")
+
+    print("user_id: ", user_id)
+    print("type(user_id): ", type(user_id))
+
+    if not user_id or user_id == "None":
+        messages.success(request,("Vous devez être connecté pour accéder à cette fonctionnalité"))
+        return redirect(request.META['HTTP_REFERER'])
+
+    if (is_submit_button_clicked
+            and original_id
+            and substitute_id
+            and user_id):
+
+        try:
+            L_Favorite.objects.get_or_create(
+                customer_id=user_id,
+                original_product_id=original_id,
+                substitute_product_id=substitute_id)
+            
+            return redirect('products_favorites')
+    
+        except Exception as e:
+            logging.error(f"Failed to create favorites! Reason: {str(e)}")
+            messages.success(request, ("Hélas, une erreur du système est survenue. "
+                                        "Merci de ré-essayer ultérieurement."))
+
+
+    print(is_submit_button_clicked, " - ", original_id, " - ", substitute_id, " - user_id: ", user_id)
+    return redirect(request.META['HTTP_REFERER'])
+
 
 def check_email(email):
     if not ("@" in email and "." in email):

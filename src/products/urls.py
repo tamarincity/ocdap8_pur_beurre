@@ -5,6 +5,8 @@ from products import views
 urlpatterns = [
     # Home page
     path('home', views.home, name='products_home'),
+    # Route to store the original product and its substitute to the database
+    path('add_to_favorites', views.add_to_favorites, name='products_add_to_favorites'),
     # Route for the user to send a message
     path('contact', views.contact, name='products_contact'),
     # Route to get the details of a substitute product

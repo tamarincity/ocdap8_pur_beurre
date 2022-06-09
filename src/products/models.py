@@ -258,7 +258,7 @@ class Product (models.Model):
 class L_Favorite (models.Model):
     customer = models.ForeignKey(Customer, related_name='favorites', on_delete=models.CASCADE)
     original_product = models.ForeignKey('Product', related_name="original_products", on_delete=models.CASCADE)
-    substitue_product = models.ForeignKey('Product', related_name="substite_products", on_delete=models.CASCADE)
+    substitute_product = models.ForeignKey('Product', related_name="substitute_products", on_delete=models.CASCADE)
 
     #Methods
     def __str__(self):

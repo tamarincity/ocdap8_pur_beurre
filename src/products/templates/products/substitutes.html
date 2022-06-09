@@ -27,6 +27,19 @@
                 <br/><br/>
             </center>
 
+            <!-- Message from system -->
+            <center>
+                <div class="col-lg-6">
+                        {% if messages %}
+                            <div class="alert alert-danger" role="alert">
+                                {% for message in messages %}
+                                    {{ message }}
+                                {% endfor %}
+                            </div>            
+                        {% endif%}
+                    </div>
+            </center>
+
             <!-- List of products -->
             <div class="container-fluid p-0">
                 <div class="row g-0">
@@ -70,8 +83,11 @@
                                 <section>
                                     <center>
                                     <form action="products_add_to_favorites" method="post">
+                                        {% csrf_token %}
                                         <input type="hidden" name="original_id" value="{{original_product.id}}"/>
                                         <input type="hidden" name="substitute_id" value="{{product.id}}"/>
+                                        <input type="hidden" name="user_id" value="{{user.id}}"/>
+                                        <input type="hidden" name="is_submit_button_clicked" value="yes"/>
                                         <button type="submit" style="background-color: white; border: 1px solid; border-radius: 0.5rem;">
                                             <div class="one-row">
                                                 <img
