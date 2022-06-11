@@ -18,12 +18,11 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('list_of_args', nargs='+')
 
-    def _check_if_args_well_formed(self, options):
+    def _check_if_args_well_formed(self, options: dict):
 
         # The last arg must not be an integer
         try:
             last_arg = int(options['list_of_args'][-1])
-            print("type(last_arg): ", type(last_arg))
             raise Exception(
                     "command must be: function int str int str "
                     "(e.g.: addproducts 100 boissons 50 petit-dejeuners)")
@@ -60,6 +59,7 @@ class Command(BaseCommand):
                     pass
 
     def handle(self, *args, **options):
+        print("options: ", options)
 
         self._check_if_args_well_formed(options)
 

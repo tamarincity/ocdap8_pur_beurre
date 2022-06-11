@@ -71,7 +71,7 @@ def add_products_to_db(store_categories_in_db):
 
 
 class TestProductModel:
-    @pytest.mark.test_me
+    # @pytest.mark.test_me
     def test_add_many(self, caplog, store_categories_in_db):
         caplog.clear()
 

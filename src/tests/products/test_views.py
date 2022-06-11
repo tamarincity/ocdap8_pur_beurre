@@ -69,7 +69,7 @@ def add_a_product():
     )
 
 @pytest.mark.django_db
-@pytest.mark.test_me
+# @pytest.mark.test_me
 def test_get_substitutes(monkeypatch, caplog):
     caplog.clear()
 

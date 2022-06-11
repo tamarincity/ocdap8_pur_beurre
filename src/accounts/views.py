@@ -30,7 +30,7 @@ def check_mail_validity( email: str) -> bool:
 def login_user(request):
     list(messages.get_messages(request))  # Clear all system messages
 
-    if request.method == 'POST':  # requête via formulaire
+    if request.method == 'POST':
         username, password = _get_credentials(request)
 
         if not username or not password:
@@ -94,13 +94,6 @@ def account(request):
 
     context = {"first_name": first_name, "last_name": last_name}
 
-    print()
-    print()
-    print("username: ", username)
-    print()
-    print()
-    print()
-
     try:
         if is_submit_button_clicked and username:
             (Customer.objects.filter(username=username)
@@ -115,6 +108,5 @@ def account(request):
             "Malheureusement une erreur du système est survenue. "
             "Les données n'ont pas pu être mises à jour. "
             "Merci de ré-essayez plus tard."))
-        return False
 
     return render(request,"accounts/account.html", context=context)
