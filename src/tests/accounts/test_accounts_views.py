@@ -12,6 +12,9 @@ from accounts.views import (
 
 client = Client()
 
+# Create a virtual database then destroy it after all tests have finished.
+pytestmark = pytest.mark.django_db
+
 credentials = {
                 "username": "toto@email.fr",
                 "first_name": "Toto",
@@ -190,7 +193,7 @@ def test_signup_user(monkeypatch):
     assert (response.redirect_chain[0][0] == "/")  # redirect_chain = [('/', 302)]
     
 @pytest.mark.django_db
-@pytest.mark.test_me
+# @pytest.mark.test_me
 def test_account(monkeypatch):
 
     # Create a registered user

@@ -4,50 +4,11 @@ import pytest
 
 from products.models import Category
 from products.models import Product as SUT
-from src.tests.products.params_for_mark_parametrize.products_objs import dl_product1
+from src.tests.products.params_for_mark_parametrize.products_objs import welformed_products
 
-
-product1 = copy.deepcopy(dl_product1)
-product2 = copy.deepcopy(dl_product1)
-product3 = copy.deepcopy(dl_product1)
-product4 = copy.deepcopy(dl_product1)
-product5 = copy.deepcopy(dl_product1)
-
-product1._id = "123456"
-product1.nutriscore_grade = "d"
-product1.product_name_fr = "Lemonade"
-product1.mega_keywords = " lemonade lemon beverage "
-product1.categories = ["beverage", "sugar added", "fruity", "lemon", "carbonated water"]
-
-product2._id = "123457"
-product2.nutriscore_grade = "e"
-product2.product_name_fr = "Cool cola"
-product2.mega_keywords = " cool cola soda beverage cola "
-product2.categories = ["beverage", "sugar added", "cola"]
-
-product3._id = "123458"
-product3.nutriscore_grade = "b"
-product3.product_name_fr = "Lemonade light"
-product3.mega_keywords = " lemonade lemon beverage light"
-product3.categories = ["beverage", "fruity", "lemon", "light", "carbonated water"]
-
-product4._id = "123459"
-product4.nutriscore_grade = "c"
-product4.product_name_fr = "Cool cola light"
-product4.mega_keywords = " cool cola soda beverage cola light "
-product4.categories = ["beverage", "cola", "light"]
-
-product5._id = "123460"
-product5.nutriscore_grade = "a"
-product5.product_name_fr = "Natural carbonated water"
-product5.mega_keywords = " carbonated water beverage natural "
-product5.categories = ["beverage", "carbonated water", "water"]
-
-welformed_products = [product1, product2, product3, product4, product5]
 
 # Create a virtual database then destroy it after all tests have finished.
 pytestmark = pytest.mark.django_db
-
 
 categories_dict = {} # keys will be names, values will be instances of Category
 

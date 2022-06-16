@@ -283,7 +283,7 @@ class Category(models.Model):
         If somenthing went wrong, return None"""
 
         if not ( categories and isinstance(categories, set)):
-            logging.warning("Categories to add in database must be a set!")
+            logging.warning("Categories to add in database must be a set and NOT empty!")
             return None
 
         stored_categories = {}

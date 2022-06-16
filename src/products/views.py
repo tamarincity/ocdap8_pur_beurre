@@ -1,6 +1,7 @@
 from email.mime import message
 import logging
 
+from django.contrib.auth import get_user_model
 from django.shortcuts import redirect, render
 from django.http import JsonResponse
 from django.urls import reverse
@@ -8,14 +9,16 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
 
-
 from products.models import Product, ReceivedMessage, L_Favorite, Customer
 from products import utils
 
 
+User = get_user_model()
+
 # Create your views here.
 def home(request):
     return render(request, 'products/home.html')
+
 
 def add_to_favorites(request):
     is_submit_button_clicked = request.POST.get('is_submit_button_clicked', "")
@@ -23,11 +26,9 @@ def add_to_favorites(request):
     substitute_id = request.POST.get('substitute_id', "")
     user_id = request.POST.get('user_id', "")
 
-    print("user_id: ", user_id)
-    print("type(user_id): ", type(user_id))
-
-    if not user_id or user_id == "None":
-        messages.success(request,("Vous devez être connecté pour accéder à cette fonctionnalité"))
+    if not user_id or user_id == "None" or not request.user.is_authenticated:
+        messages.success(request,(
+            "Vous devez être connecté pour accéder à cette fonctionnalité"))
         return redirect(request.META['HTTP_REFERER'])
 
     if (is_submit_button_clicked
@@ -41,16 +42,15 @@ def add_to_favorites(request):
                 original_product_id=original_id,
                 substitute_product_id=substitute_id)
             
-            messages.success(request, ("Ce produit a bien été enregistrer dans vos aliments préférés."))
-            return redirect(request.META['HTTP_REFERER'])
+            messages.success(request, (
+                "Ce produit a bien été enregistré dans vos aliments préférés."))
+            return redirect(request.META.get('HTTP_REFERER'))
     
         except Exception as e:
             logging.error(f"Failed to create favorites! Reason: {str(e)}")
             messages.success(request, ("Hélas, une erreur du système est survenue. "
                                         "Merci de ré-essayer ultérieurement."))
 
-
-    print(is_submit_button_clicked, " - ", original_id, " - ", substitute_id, " - user_id: ", user_id)
     return redirect(request.META['HTTP_REFERER'])
 
 
@@ -76,13 +76,12 @@ def get_all_favorites(request):
     user_id = request.GET.get('user_id', "")
 
     favorites_rows = L_Favorite.objects.all().filter(customer_id=user_id)
-
     favorite_ids = set(row.substitute_product_id for row in favorites_rows)
-
     favorite_products = Product.objects.filter(id__in=favorite_ids)    
 
     if len(favorite_products) == 0:
-        messages.success(request,("Il n'y a pas encore de produits enregistrés dans vos aliments."))
+        messages.success(request,(
+            "Il n'y a pas encore de produit enregistré dans vos aliments préférés."))
         return render(request, "products/favorites.html")
 
     context = {'favorite_products': favorite_products}
@@ -140,11 +139,13 @@ def get_message(request):
             phone_number=phone_number,
             message=message)
         
-        messages.success(request, ("Votre message a bien été reçu. Il sera traité dans les plus brefs délais."))
+        messages.success(request, (
+            "Votre message a bien été reçu. Il sera traité dans les plus brefs délais."))
     except Exception as e:
         logging.error(f"Unable to add the customer. Reason: {str(e)}")
         messages.success(request, (
-            "Malheureusement, une erreur du système est survenue. Le message n'a pas pu être reçu !"
+            "Malheureusement, une erreur du système est survenue. "
+            "Le message n'a pas pu être reçu !"
             " Veuillez ré-essayer plus tard. Merci"))
 
     return render(request, 'products/message_received.html')
@@ -175,7 +176,8 @@ def get_origial_product(request):
         
     if len(original_products) == 0:
         logging.info("No original products found!")
-        messages.success(request, ("Aucun produit trouvé ! Essayez avec d'autres mots-clefs."))
+        messages.success(request, (
+            "Aucun produit trouvé ! Essayez avec d'autres mots-clefs."))
 
     # If there is only one original product found then should redirect to get substitutes
     if original_products and len(original_products) == 1:
@@ -187,7 +189,9 @@ def get_origial_product(request):
 
     # Many products found should return the list so the user can choose the good one
     logging.info("Render a list of products found as original products")
-    return render(request, "products/originals.html", {"original_products": original_products})
+    return render(request,
+                "products/originals.html",
+                {"original_products": original_products})
 
 
 def get_substitutes(request):
@@ -203,7 +207,8 @@ def get_substitutes(request):
 
     if len(substitute_products) == 0:
         logging.info("No original products found!")
-        messages.success(request, ("Il n'y a pas de meilleurs produit qui soit similaire"))
+        messages.success(request, (
+            "Il n'y a pas de meilleurs produit qui soit similaire"))
     
     original_product = Product.objects.get(id=original_product_id)
     
