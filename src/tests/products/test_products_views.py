@@ -343,7 +343,7 @@ def test_legal_notice():
     response = client.get('/products_legal_notice')
     assert response.templates[0].name == 'products/legal_notice.html'
 
-@pytest.mark.test_me
+# @pytest.mark.test_me
 def test_details(caplog, add_products_to_db):
     caplog.set_level(logging.INFO)
     caplog.clear()
@@ -357,3 +357,64 @@ def test_details(caplog, add_products_to_db):
     print("     should send to the page: the original product and the substitute one")
     assert response.context["original_product"].name == "Lemonade"
     assert response.context["substitute_product"].name == "Lemonade light"
+
+@pytest.mark.test_me
+def test_get_message():
+
+    print("No data sent to the page should serve the page of contact")
+    response = client.post('/products_get-message')
+    assert response.templates[0].name == "products/contact.html"
+
+
+    print("Any missing required data should serve the page of contact with the folowing "
+            "message: 'Tous les champs doivent être remplis !'")
+    context = {
+                "firstname": "Mickey",
+                "lastname": "Mouse",
+                "email": "mickey@mouse.us",
+                "phone_number": "",
+                "message": "Hello !",}
+
+    response = client.post('/products_get-message', context)
+    assert response.templates[0].name == "products/contact.html"
+    assert "alert" in str(response.content)
+    assert "Tous les champs doivent " in str(response.content)
+    assert "tre remplis " in str(response.content)
+
+
+    print("If the email address is not properly formed then should serve the page "
+            "of contact with the folowing message: 'Le champ email est incorrect !'")
+    context = {
+                "firstname": "Mickey",
+                "lastname": "Mouse",
+                "email": "mickey@mouse",
+                "phone_number": "1234567890",
+                "message": "Hello !",}
+
+    response = client.post('/products_get-message', context)
+    assert response.templates[0].name == "products/contact.html"
+    assert "alert" in str(response.content)
+    assert "Le champ email est incorrect " in str(response.content)
+
+
+    print("If all the required fields are present then")
+    print("     should serve the page of received message") 
+    context = {
+                "firstname": "Mickey",
+                "lastname": "Mouse",
+                "email": "mickey@mouse.us",
+                "phone_number": "1234567890",
+                "message": "Hello !",}
+
+    response = client.post('/products_get-message', context)
+    assert response.templates[0].name == "products/message_received.html"
+
+
+    print("     should display the folowing message: "
+            "'Votre message a bien été reçu. Il sera traité dans les plus brefs délais.'")
+    assert "alert" in str(response.content)
+    assert "Votre message a bien " in str(response.content)
+    assert "Il sera trait" in str(response.content)
+    assert " dans les plus brefs d" in str(response.content)
+
+    

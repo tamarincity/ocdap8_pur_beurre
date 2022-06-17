@@ -107,8 +107,6 @@ def get_message(request):
                 "phone_number": phone_number,
                 "message": message,}
 
-    print("email: ", email)
-
     is_email_well_formed = check_email(email)
     if not is_email_well_formed:
         messages.success(request, ("Le champ email est incorrect !"))
