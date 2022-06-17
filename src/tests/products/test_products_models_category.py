@@ -3,10 +3,11 @@ import pytest
 from products.models import Category as SUT
 
 
-@pytest.mark.django_db
+pytestmark = pytest.mark.django_db
+
 
 class TestCategoryModel:
-    
+
     # @pytest.mark.test_me
     def test_add_many(self, caplog):
         caplog.clear()
@@ -20,7 +21,7 @@ class TestCategoryModel:
         caplog.clear()
 
         print("An empty category in categories should log an error")
-        SUT.add_many({"category_1", "category_2",  "", "category_3"})
+        SUT.add_many({"category_1", "category_2", "", "category_3"})
 
         assert "ERROR" in caplog.text
         caplog.clear()
@@ -38,7 +39,7 @@ class TestCategoryModel:
 
         print("A set of categories ")
         categories = SUT.add_many({"category_1", "category_2", "category3"})
-        
+
         print("     should let all of them be added to the database")
         assert len(categories) == 3
 
@@ -50,4 +51,3 @@ class TestCategoryModel:
 
         print("         with the values as instances of Category")
         assert [category for category in categories.values() if not (isinstance, SUT)] or True
-

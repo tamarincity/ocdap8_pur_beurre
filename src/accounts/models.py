@@ -10,6 +10,6 @@ class Customer(AbstractUser):
 
     customer_type = models.CharField(
         choices=CustomerType.choices, default=CustomerType.CUSTOMER, max_length=30)
-    
+
     def __str__(self):
         return f"{self.username} ({self.customer_type})"

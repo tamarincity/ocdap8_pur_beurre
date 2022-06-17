@@ -4,6 +4,7 @@ from products.models import Category
 
 pytestmark = pytest.mark.django_db  # Create a virtual database
 
+
 class TestCategoryModel:
 
     def add_a_category(self):
@@ -14,7 +15,6 @@ class TestCategoryModel:
 
         assert category.name == "Category name"
         assert Category.objects.all().count() == 1
-
 
     def test_should_not_be_able_to_add_the_same_category_to_the_db(self):
         expected = "unique name violation"
@@ -27,5 +27,5 @@ class TestCategoryModel:
 
             if "unique" in str(e).lower():
                 result = expected
-        
+
         assert result == expected

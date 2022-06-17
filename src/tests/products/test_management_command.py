@@ -3,9 +3,6 @@ import logging
 import pytest
 
 from src.products.management.commands.addproducts import Command
-from products.etl_extract import download_products
-from products.etl_transform import fetch_all_categories_from_products
-from products.etl_load import populate_database
 
 
 SUT = Command
@@ -22,7 +19,7 @@ def test__check_if_args_well_formed(monkeypatch, caplog):
         print("Dans le mock download products")
         return [
             {"name": "product1", "categories": "category1, category2"},
-            {"name": "product", "categories": "category1, category2"},]
+            {"name": "product", "categories": "category1, category2"}]
 
     def mock_populate_database(all_products, all_categories):
         print("Dans le mock_populate_database")
@@ -32,15 +29,14 @@ def test__check_if_args_well_formed(monkeypatch, caplog):
         print("Dans le mock_fetch_all_categories_from_products")
         return set(["category1", "category2"])
 
-
     monkeypatch.setattr("src.products.etl_extract.download_products",
-        mock_download_products)
+                        mock_download_products)
 
     monkeypatch.setattr("src.products.etl_transform.fetch_all_categories_from_products",
-        mock_fetch_all_categories_from_products)
+                        mock_fetch_all_categories_from_products)
 
     monkeypatch.setattr("src.products.etl_load.populate_database",
-        mock_populate_database)
+                        mock_populate_database)
 
     print("If the last value in the cli is not a number, then should return None"
             "because no problem occurred")
@@ -65,9 +61,8 @@ def test_add_arguments():
                 return None
             else:
                 raise Exception("The args of add_argument must be: 'list_of_args', nargs='+'")
-    
+
     parser = MockParser
 
     print("Add_argument method should have <<'list_of_args'>> and <<nargs='+'>> as arguments")
     assert SUT.add_arguments(SUT, parser) == None
-

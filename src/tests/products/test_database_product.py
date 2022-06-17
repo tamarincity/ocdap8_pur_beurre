@@ -11,7 +11,6 @@ class TestDatabase:
     def add_a_category(self):
         return Category.objects.create(name="Category name")
 
-
     def add_a_product(self):
         return Product.objects.create(
             name="Product name",
@@ -35,7 +34,6 @@ class TestDatabase:
         assert category.name == "Category name"
         assert Category.objects.all().count() == 1
 
-
     def test_should_not_be_able_to_add_the_same_category_to_the_db(self):
         expected = "unique name violation"
         result = "Test failed"
@@ -47,9 +45,8 @@ class TestDatabase:
 
             if "unique" in str(e).lower():
                 result = expected
-        
-        assert result == expected
 
+        assert result == expected
 
     def test_should_add_a_product_to_the_db(self):
         product = self.add_a_product()
@@ -67,9 +64,7 @@ class TestDatabase:
         assert product.nutriscore_grade == "Grade (A B C D E)"
         assert product.stores == "All the stores where you can find the product"
         assert product.url == "url_of_the_website_of_the_product"
-
         assert Product.objects.all().count() == 1
-
 
     def test_should_not_be_able_to_add_the_same_product_to_the_db(self):
         expected = "unique original_id violation"
@@ -82,5 +77,5 @@ class TestDatabase:
 
             if "unique" in str(e).lower():
                 result = expected
-        
+
         assert result == expected

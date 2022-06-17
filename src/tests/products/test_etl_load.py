@@ -1,6 +1,3 @@
-import pytest
-import requests
-
 from products.models import Category, Product
 from src.products import etl_load
 from products.utils import WellFormedProduct
@@ -53,24 +50,22 @@ product2 = WellFormedProduct({
 
 list_of_welformed_products = [product1, product2]
 
-# @pytest.mark.test_me
+
 def test_populate_database(monkeypatch):
 
     SUT = etl_load
     is_categories_added = True
-    
 
     def mock_category_add_many(categories):
         if not (categories
                 and isinstance(categories, set)):
-            is_categories_added = False
             return False
         for category in categories:
             if not isinstance(category, str):
                 return False
 
         return True
-    
+
     def mock_product_add_many(products):
         if not (is_categories_added
                 and products
@@ -83,10 +78,8 @@ def test_populate_database(monkeypatch):
 
         return True
 
-
     monkeypatch.setattr(Category, 'add_many', mock_category_add_many)
     monkeypatch.setattr(Product, 'add_many', mock_product_add_many)
-
 
     print("A list of WellFormedProduct and a set of categories "
             "should return True")

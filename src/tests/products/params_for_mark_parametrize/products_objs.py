@@ -1,8 +1,5 @@
 import copy
 
-import pytest
-
-from products.models import Category
 from src.products.utils import (
     WellFormedProduct)
 from params_for_mark_parametrize.params_etl_extract import (good_downloaded_product)

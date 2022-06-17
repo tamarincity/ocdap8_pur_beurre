@@ -6,7 +6,6 @@ from accounts.models import Customer
 from accounts.views import (
     _get_credentials,
     check_mail_validity,
-    login_user,
 )
 
 
@@ -33,12 +32,11 @@ def _mock_get_credentials(request):
 class MockRequest:
     def __init__(self, method):
         self.method = method.upper()
-    
+
         if self.method == 'POST':
             self.POST = credentials
 
 
-# @pytest.mark.test_me
 def test_get_credentials():
 
     request = MockRequest("POST")
@@ -46,7 +44,7 @@ def test_get_credentials():
     print("Should get credentials of user from a form with POST method")
     assert _get_credentials(request) == ('toto@email.fr', '12345678')
 
-# @pytest.mark.test_me
+
 def test_check_email_validity(monkeypatch):
 
     def mock_validate_email(email):
@@ -57,7 +55,7 @@ def test_check_email_validity(monkeypatch):
                 return True
 
         raise Exception('Invalid email address')
-    
+
     monkeypatch.setattr("src.accounts.views.validate_email", mock_validate_email)
 
     print("Should return True if if the email address is valid")
@@ -67,22 +65,19 @@ def test_check_email_validity(monkeypatch):
     assert check_mail_validity("toto@dupont") == False
 
 
-# @pytest.mark.test_me
 def test_login_user(monkeypatch):
 
     def mock_authenticate(username, password):
         if (username == credentials["username"]
-                and  password == credentials["password"]):
+                and password == credentials["password"]):
             return True
         return False
 
     def mock_login(request, user):
         pass
 
-
     monkeypatch.setattr("accounts.views.authenticate", mock_authenticate)
     monkeypatch.setattr("accounts.views.login", mock_login)
-
 
     print("If no username or no password is provided in login then should return "
             "'Tous les champs doivent être remplis' as message")
@@ -91,14 +86,12 @@ def test_login_user(monkeypatch):
             and "Tous les champs doivent" in str(response.content)
             and "remplis" in str(response.content))
 
-
     print("If username is not registered or password is incorrect then should return "
             "'Identifiants incorrects' as message")
     response = client.post(
         '/accounts_login', {"username": credentials["username"], "password": "XXX"})
     assert ("alert" in str(response.content)
             and "Identifiants incorrects" in str(response.content))
-
 
     print("If username and password are correct then should redirect to the home page")
     # follow=True allows to follow redirection
@@ -107,14 +100,12 @@ def test_login_user(monkeypatch):
                             "password": credentials["password"]}, follow=True)
 
     assert (response.redirect_chain[0][0] == "/")  # redirect_chain = [('/', 302)]
-    
 
-# @pytest.mark.test_me
+
 def test_logout_user(monkeypatch):
 
     def mock_logout(request):
         pass
-
 
     monkeypatch.setattr("accounts.views.logout", mock_logout)
 
@@ -124,18 +115,17 @@ def test_logout_user(monkeypatch):
 
     assert (response.redirect_chain[0][0] == "/")  # redirect_chain = [('/', 302)]
 
-@pytest.mark.django_db
-# @pytest.mark.test_me
+
 def test_signup_user(monkeypatch):
 
     def mock_get_credentials(request):
         return _mock_get_credentials(request)
 
-    def mock_check_mail_validity( email: str) -> bool:
+    def mock_check_mail_validity(email: str) -> bool:
         if (email
-            and isinstance(email, str)
-            and email.count("@") == 1):
-    
+                and isinstance(email, str)
+                and email.count("@") == 1):
+
             right_part = email.split("@")[-1]
 
             if "." in right_part:
@@ -147,11 +137,9 @@ def test_signup_user(monkeypatch):
             raise Exception("User already exists!")
         return True
 
-    
     monkeypatch.setattr("accounts.views._get_credentials", mock_get_credentials)
     monkeypatch.setattr("accounts.views.check_mail_validity", mock_check_mail_validity)
     monkeypatch.setattr("accounts.views.login", mock_login)
-
 
     print("If username (email) or password is missing then "
             "should alert 'Tous les champs doivent être remplis !'")
@@ -162,7 +150,6 @@ def test_signup_user(monkeypatch):
             and "Tous les champs doivent" in str(response.content)
             and "remplis" in str(response.content))
 
-
     print("If username (email) is malformed then "
             "should alert 'Email incorrect !'")
     response = client.post(
@@ -171,7 +158,6 @@ def test_signup_user(monkeypatch):
 
     assert ("alert" in str(response.content)
             and "Email incorrect" in str(response.content))
-
 
     print("If user is already registered then "
             "should alert 'Cet utilisateur est déjà enregistré !'")
@@ -183,7 +169,6 @@ def test_signup_user(monkeypatch):
             and "Cet utilisateur est d" in str(response.content)
             and "enregistr" in str(response.content))
 
-
     print("If user is not already registered then "
             "should redirect to the home page")
     response = client.post(
@@ -191,9 +176,8 @@ def test_signup_user(monkeypatch):
         {"username": "new@user.fr", "password": credentials["password"]}, follow=True)
 
     assert (response.redirect_chain[0][0] == "/")  # redirect_chain = [('/', 302)]
-    
-@pytest.mark.django_db
-# @pytest.mark.test_me
+
+
 def test_account(monkeypatch):
 
     # Create a registered user
@@ -201,7 +185,6 @@ def test_account(monkeypatch):
         username=credentials["username"],
         first_name="",
         last_name="")
-
 
     print("If the registered user modify his account via the form then")
     print("     should alert 'Votre compte a bien été mis à jour'")

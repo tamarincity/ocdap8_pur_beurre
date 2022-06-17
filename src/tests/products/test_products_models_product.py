@@ -1,5 +1,3 @@
-import copy
-
 import pytest
 
 from products.models import Category
@@ -10,24 +8,25 @@ from src.tests.products.params_for_mark_parametrize.products_objs import welform
 # Create a virtual database then destroy it after all tests have finished.
 pytestmark = pytest.mark.django_db
 
-categories_dict = {} # keys will be names, values will be instances of Category
+categories_dict = {}  # keys will be names, values will be instances of Category
+
 
 @pytest.fixture
 def store_categories_in_db():
-     # Create categories from the attribute 'categories' of each downloaded product
-     # so that a product can be added to the database and get included in a stored category
+    # Create categories from the attribute 'categories' of each downloaded product
+    # so that a product can be added to the database and get included in a stored category
     categories = set(
         category for product in welformed_products
         for category in product.categories)
-    
-    
+
     for category in categories:
         categories_dict[category] = Category.objects.create(name=category)
 
     return categories_dict
 
+
 @pytest.fixture
-def add_products_to_db(store_categories_in_db):  
+def add_products_to_db(store_categories_in_db):
     SUT.add_many(welformed_products)
 
 
@@ -41,29 +40,29 @@ class TestProductModel:
         store_categories_in_db
 
         print("A list of elements that are not instances of WellFormedProduct should raise "
-            " an exception and return False because the product can't be stored in the database.")
+                " an exception and return False because the product can't be stored in "
+                "the database.")
         assert SUT.add_many(
             ["not", "list", "of", "instance", "of", "WellFormedProduct"]) == False
         assert caplog.text != None
         caplog.clear()
 
         print("A list of welformed products that are already stored "
-            "in the database should store all of the products then return True.")
+                "in the database should store all of the products then return True.")
         assert SUT.add_many(
             welformed_products) == True
-        
-        assert SUT.objects.all().count() == 5
 
+        assert SUT.objects.all().count() == 5
 
     def test_find_original_products(self, add_products_to_db):
 
         store_categories_in_db   # To create categories_dict
 
-        print("Have the products been added to the database?: ", SUT.add_many(welformed_products))   
+        print("Have the products been added to the database?: ", SUT.add_many(welformed_products))
 
         print(
             "'beverage' as keyword should return all products containing the keyword 'beverage'")
-        
+
         original_products = SUT.find_original_products("beverage")
         assert len(original_products) == 5
 
@@ -71,25 +70,23 @@ class TestProductModel:
             "'beverage orange' as keywords should return an empty Queryset because no product "
             "contains ALL these keywords (None of the products contains 'orange' AND 'beverage'"
             " in keywords)")
-        
+
         original_products = SUT.find_original_products("beverage orange")
         assert list(original_products) == []
 
         print(
             "'beverage lemon light' as keywords should return only one product because only one "
             "product contains ALL these keywords")
-        
+
         original_products = SUT.find_original_products("beverage lemon light")
         assert len(original_products) == 1
         assert original_products[0].name == "Lemonade light"
 
-
     def test_find_substitute_products(self, add_products_to_db):
         add_products_to_db
 
-
         print("An original product")
-        cool_cola_with_score_e = SUT.objects.get(original_id=123457)        
+        cool_cola_with_score_e = SUT.objects.get(original_id=123457)
 
         substitutes = SUT.find_substitute_products(
             str(cool_cola_with_score_e.id),
@@ -107,7 +104,7 @@ class TestProductModel:
         assert substitutes[0]["weight"] > substitutes[-1]["weight"]
 
         print("An original product that does not have a better substitute ")
-        natural_carb_water_with_score_a = SUT.objects.get(original_id=123460)        
+        natural_carb_water_with_score_a = SUT.objects.get(original_id=123460)
 
         substitutes = SUT.find_substitute_products(
             str(natural_carb_water_with_score_a.id),
@@ -119,8 +116,8 @@ class TestProductModel:
         print("A non string original product ID should raise an exception")
         with pytest.raises(Exception):
             SUT.find_substitute_products(
-            natural_carb_water_with_score_a.id,
-            natural_carb_water_with_score_a.nutriscore_grade)
+                natural_carb_water_with_score_a.id,
+                natural_carb_water_with_score_a.nutriscore_grade)
 
         print("An empty string as original product ID should raise an exception")
         with pytest.raises(Exception):
@@ -131,11 +128,11 @@ class TestProductModel:
         print("A non string original nutriscore_grade should raise an exception")
         with pytest.raises(Exception):
             SUT.find_substitute_products(
-            str(natural_carb_water_with_score_a.id),
-            ["a"])
+                str(natural_carb_water_with_score_a.id),
+                ["a"])
 
         print("An empty string as original nutriscore_grade should raise an exception")
         with pytest.raises(Exception):
             SUT.find_substitute_products(
-            str(natural_carb_water_with_score_a.id),
-            "")
+                str(natural_carb_water_with_score_a.id),
+                "")

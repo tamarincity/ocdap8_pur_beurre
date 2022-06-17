@@ -12,6 +12,8 @@ icecream = "*"
 pytest-django = "*"
 pytest-cov = "*"
 whitenoise = "*"
+black = "*"
+flake8 = "*"
 
 [dev-packages]
 

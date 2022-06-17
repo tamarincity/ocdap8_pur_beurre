@@ -11,6 +11,7 @@ from accounts.models import Customer
 
 User = get_user_model()
 
+
 # Get credentials sent via the form
 def _get_credentials(request):
     username = request.POST.get('username', None)
@@ -19,9 +20,9 @@ def _get_credentials(request):
 
 
 # Check if the email is properly formed
-def check_mail_validity( email: str) -> bool:
+def check_mail_validity(email: str) -> bool:
     try:
-        validate_email( email )
+        validate_email(email)
         return True
     except ValidationError:
         return False
@@ -45,7 +46,7 @@ def login_user(request):
 
         messages.success(request, ("Identifiants incorrects !"))
 
-    return render(request,"accounts/login.html")
+    return render(request, "accounts/login.html")
 
 
 def logout_user(request):
@@ -77,13 +78,13 @@ def signup_user(request):
             login(request, user)
 
             return redirect('products_home')
-        
+
         except Exception as e:
             print(str(e))
             if "exists" in str(e):
                 messages.success(request, ("Cet utilisateur est déjà enregistré !"))
 
-    return render(request,"accounts/signup.html")
+    return render(request, "accounts/signup.html")
 
 
 def account(request):
@@ -99,7 +100,6 @@ def account(request):
             (Customer.objects.filter(username=username)
                 .update(first_name=first_name, last_name=last_name))
 
-        
             messages.success(request, ("Votre compte a bien été mis à jour"))
 
     except Exception as e:
@@ -109,4 +109,4 @@ def account(request):
             "Les données n'ont pas pu être mises à jour. "
             "Merci de ré-essayez plus tard."))
 
-    return render(request,"accounts/account.html", context=context)
+    return render(request, "accounts/account.html", context=context)
