@@ -14,6 +14,8 @@ pytest-cov = "*"
 whitenoise = "*"
 black = "*"
 flake8 = "*"
+pytest-selenium = "*"
+python-dotenv = "*"
 
 [dev-packages]
 

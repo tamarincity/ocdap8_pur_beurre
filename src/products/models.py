@@ -5,24 +5,25 @@ from django.db import connection, models
 from django.db import transaction
 from django.db.models import Q
 
-from icecream import ic
-
 from accounts.models import Customer
 
 from products.utils import WellFormedProduct
 from .constants import (
     MAX_NBR_OF_SUBSTITUTE_PRODUCTS,
     PRODUCT_NAME_MAX_LENGTH,
-    QUANTITY_MAX_LENGTH
+    QUANTITY_MAX_LENGTH,
 )
 
 
 # Create your models here.
 
-class Product (models.Model):
-    name = models.CharField(max_length=PRODUCT_NAME_MAX_LENGTH, help_text='Name of the product')
-    brands = models.TextField(help_text='Brands of the product')
-    code = models.BigIntegerField(help_text='Bar code of the product')
+
+class Product(models.Model):
+    name = models.CharField(
+        max_length=PRODUCT_NAME_MAX_LENGTH, help_text="Name of the product"
+    )
+    brands = models.TextField(help_text="Brands of the product")
+    code = models.BigIntegerField(help_text="Bar code of the product")
     original_id = models.BigIntegerField(unique=True, db_index=True)
     quantity = models.CharField(max_length=QUANTITY_MAX_LENGTH)
     image_thumb_url = models.URLField()
@@ -48,23 +49,21 @@ class Product (models.Model):
     stores = models.TextField()
     url = models.URLField()
 
+    # Metadata
+    class Meta:
+        ordering = ["name"]
 
-    #Metadata
-    class Meta :
-        ordering = ['name']
-
-    #Methods
+    # Methods
     def __str__(self):
         return self.name
 
     @classmethod
-    def add_many(cls, products: list[WellFormedProduct])-> bool:
+    def add_many(cls, products: list[WellFormedProduct]) -> bool:
         """Add products to the database then return True if they were added successfully
         otherwise False.
         The arg products is a list of instances of WellFormedProduct."""
 
-        if not (    products
-                    and isinstance(products, list)):
+        if not (products and isinstance(products, list)):
             return False
 
         is_new_product_added = False
@@ -76,23 +75,23 @@ class Product (models.Model):
                     except Product.DoesNotExist:  # if the product is not already stored
                         is_new_product_added = True
                         stored_product = Product(
-                                brands=product.brands,
-                                code=product.code,
-                                image_thumb_url=product.image_thumb_url,
-                                image_url=product.image_url,
-                                ingredients_text=product.ingredients_text_fr,
-                                keywords=product.mega_keywords,
-                                name=product.product_name_fr,
-                                nutriments=product.nutriments,
-                                nutriscore_grade=product.nutriscore_grade,
-                                original_id=product._id,
-                                quantity=product.quantity,
-                                stores=product.stores,
-                                url=product.url,
-                                )
+                            brands=product.brands,
+                            code=product.code,
+                            image_thumb_url=product.image_thumb_url,
+                            image_url=product.image_url,
+                            ingredients_text=product.ingredients_text_fr,
+                            keywords=product.mega_keywords,
+                            name=product.product_name_fr,
+                            nutriments=product.nutriments,
+                            nutriscore_grade=product.nutriscore_grade,
+                            original_id=product._id,
+                            quantity=product.quantity,
+                            stores=product.stores,
+                            url=product.url,
+                        )
                         stored_product.save()
                     except Exception as e:
-                            raise Exception(str(e))
+                        raise Exception(str(e))
 
                     for category in product.categories:
                         stored_category = Category.objects.get(name=category)
@@ -111,8 +110,7 @@ class Product (models.Model):
         All the keywords must be in product.keywords for the product to get selected.
         return: list of products
         """
-        if not (keywords
-                and isinstance(keywords, str)):
+        if not (keywords and isinstance(keywords, str)):
             return None
 
         keywords = keywords.replace(",", " ")
@@ -128,35 +126,46 @@ class Product (models.Model):
         return products
 
     @classmethod
-    def find_substitute_products(cls, original_product_id: str, original_product_nutriscore : str):
+    def find_substitute_products(
+        cls, original_product_id: str, original_product_nutriscore: str
+    ):
         """Returns a list of substitute products for a given product id.
         The products will be selected according to the number of categories in common
         with the original one then according to their nutriscore_grade (A to E).
         """
 
-        if not (original_product_id
-                and original_product_nutriscore
-                and isinstance(original_product_id, str)
-                and isinstance(original_product_nutriscore, str)):
+        if not (
+            original_product_id
+            and original_product_nutriscore
+            and isinstance(original_product_id, str)
+            and isinstance(original_product_nutriscore, str)
+        ):
 
-            raise Exception("original_product_id and original_product_nutriscore must be "
-                "strings and not empty")
+            raise Exception(
+                "original_product_id and original_product_nutriscore must be "
+                "strings and not empty"
+            )
 
         try:
             int(original_product_id)
         except ValueError:
-            raise Exception("Error in products.models.Product.find_substitute_products()! "
-                            "original_product_id must be convertible to integer!")
+            raise Exception(
+                "Error in products.models.Product.find_substitute_products()! "
+                "original_product_id must be convertible to integer!"
+            )
 
         try:
             int(original_product_nutriscore)
-            raise Exception("Error in products.models.Product.find_substitute_products()! "
-                            "original_product_nutriscore must be ONE letter from a to e!")
+            raise Exception(
+                "Error in products.models.Product.find_substitute_products()! "
+                "original_product_nutriscore must be ONE letter from a to e!"
+            )
         except ValueError:
             if len(original_product_nutriscore) != 1:
-                raise Exception("Error in products.models.Product.find_substitute_products()! "
-                                "original_product_nutriscore must be ONE letter from a to e!")
-
+                raise Exception(
+                    "Error in products.models.Product.find_substitute_products()! "
+                    "original_product_nutriscore must be ONE letter from a to e!"
+                )
 
         product_fields_as_str = (
             "p.id,"
@@ -172,7 +181,8 @@ class Product (models.Model):
             "p.nutriscore_grade,"
             "p.ingredients_text,"
             "p.stores,"
-            "p.nutriments,")
+            "p.nutriments,"
+        )
 
         try:
             with connection.cursor() as cursor:
@@ -197,24 +207,26 @@ class Product (models.Model):
                     """
                     " %s"
                     """)
-                            and nutriscore_grade < 
+                            and nutriscore_grade <
                     """
-                    " %s"
+                    "  %s"
                     f"""
-                        GROUP BY 
-                            {product_fields_as_str}
+                        GROUP BY
+                             {product_fields_as_str}
                             product_id
-                        ORDER BY 
-                            weight desc,
+                        ORDER BY
+                             weight desc,
                             p.nutriscore_grade asc
-                        limit 
+                        limit
                     """
-                    " %s",
-                    [   original_product_id,
+                    "  %s",
+                    [
+                        original_product_id,
                         original_product_id,
                         original_product_nutriscore,
-                        MAX_NBR_OF_SUBSTITUTE_PRODUCTS])
-
+                        MAX_NBR_OF_SUBSTITUTE_PRODUCTS,
+                    ],
+                )
 
                 rows = cursor.fetchall()
 
@@ -234,7 +246,8 @@ class Product (models.Model):
                 "stores",
                 "nutriments",
                 "product_to_substitute_id",
-                "weight"]
+                "weight",
+            ]
 
             # Creation of the following:
             # products = [{field1:val1, field2: val2}, {field1:val1, field2: val2}...]
@@ -242,7 +255,9 @@ class Product (models.Model):
                 {
                     fields[i]: val
                     if fields[i] != "nutriments"  # "nutriments" is a json into a string
-                    else {"nutriment": ast.literal_eval(val)}  # "nutriments" => str to json
+                    else {
+                        "nutriment": ast.literal_eval(val)
+                    }  # "nutriments" => str to json
                     for i, val in enumerate(product)
                 }
                 for product in rows
@@ -252,38 +267,49 @@ class Product (models.Model):
             logging.error("Error while getting substitute products:")
             logging.error(str(e))
             products = []
-        
+
         return products
 
-class L_Favorite (models.Model):
-    customer = models.ForeignKey(Customer, related_name='favorites', on_delete=models.CASCADE)
-    original_product = models.ForeignKey('Product', related_name="original_products", on_delete=models.CASCADE)
-    substitute_product = models.ForeignKey('Product', related_name="substitute_products", on_delete=models.CASCADE)
 
-    #Methods
+class L_Favorite(models.Model):
+    customer = models.ForeignKey(
+        Customer, related_name="favorites", on_delete=models.CASCADE
+    )
+    original_product = models.ForeignKey(
+        "Product", related_name="original_products", on_delete=models.CASCADE
+    )
+    substitute_product = models.ForeignKey(
+        "Product", related_name="substitute_products", on_delete=models.CASCADE
+    )
+
+    # Methods
     def __str__(self):
         return f"{self.original_product}/{self.substitute_product} ({self.customer})"
 
 
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    products = models.ManyToManyField('Product', related_name='categories')
+    products = models.ManyToManyField("Product", related_name="categories")
 
     class Meta:
-        ordering = ['name']
+        ordering = ["name"]
 
     def __str__(self):
         return self.name
 
     @classmethod
-    def add_many(cls, categories: set)->dict:  # keys are names, values are instance of Category
+    def add_many(
+        cls, categories: set
+    ) -> dict:  # keys are names, values are instance of Category
         """Add categories to the database and return a dictionary that contains
         each stored category as an object.
         E.g.: stored_categories["Beverage
         If somenthing went wrong, return None"""
 
-        if not ( categories and isinstance(categories, set)):
-            logging.warning("Categories to add in database must be a set and NOT empty!")
+        if not (categories and isinstance(categories, set)):
+            logging.warning(
+                "Categories to add in database must be a set and NOT empty!"
+            )
             return None
 
         stored_categories = {}
@@ -292,8 +318,9 @@ class Category(models.Model):
                 for category in categories:
                     if category and isinstance(category, str):
                         try:
-                            stored_categories[category] = (
-                                Category.objects.get_or_create(name=category))
+                            stored_categories[
+                                category
+                            ] = Category.objects.get_or_create(name=category)
                         except Exception as e:
                             raise Exception(str(e))
                     else:
@@ -314,8 +341,7 @@ class ReceivedMessage(models.Model):
     message = models.TextField()
 
     class Meta:
-        ordering = ['datetime']
+        ordering = ["datetime"]
 
     def __str__(self):
         return f"{str(self.datetime)[:16]} - {self.email}"
-

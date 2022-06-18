@@ -140,8 +140,6 @@ def test_check_email():
     assert SUT.check_email("malformed@email.com") == True
 
 
-@pytest.mark.django_db
-# @pytest.mark.test_me
 def test_get_substitutes(monkeypatch, caplog):
     caplog.clear()
 
@@ -178,8 +176,8 @@ def test_get_substitutes(monkeypatch, caplog):
 
     print("     should return a context that contains a list of products")
     print("         with a better  nutriscore_grade")
-    for product in response.context["substitute_products"]:
-        assert product["nutriscore_grade"] < "c"
+    assert all(
+        product["nutriscore_grade"] < "c" for product in response.context["substitute_products"])
 
     print("         orded by weight (from the heaviest to the lightest)")
 
@@ -295,8 +293,8 @@ def test_get_origial_product(caplog, add_products_to_db):
 
     response = client.get(url, context)
     assert len(response.context["original_products"]) == 2
-    for product in response.context["original_products"]:
-        assert "lemonade" in product.keywords
+    assert all(
+        "lemonade" in product.keywords for product in response.context["original_products"])
 
     print("     should log as info: 'Render a list of products found as original products'.")
     assert "Render a list of products found as original products" in caplog.text
