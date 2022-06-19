@@ -239,8 +239,17 @@ def legal_notice(request):
 
 
 def details(request):
-    original_product = Product.objects.get(id=request.GET.get("original_id"))
-    substitute_product = Product.objects.get(id=request.GET.get("substitute_id"))
+    print()
+    print()
+    print("DETAILS !")
+    print()
+    print()
+
+    if original_product:=request.GET.get("original_id", ""):
+        original_product = Product.objects.get(id=request.GET.get("original_id"))
+
+    if substitute_product:=request.GET.get("substitute_id", ""):
+        substitute_product = Product.objects.get(id=request.GET.get("substitute_id"))
 
     return render(
         request,

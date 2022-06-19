@@ -2,7 +2,7 @@ import copy
 
 from src.products.utils import (
     WellFormedProduct)
-from params_for_mark_parametrize.params_etl_extract import (good_downloaded_product)
+from src.tests.products.params_for_mark_parametrize.params_etl_extract import (good_downloaded_product)
 
 
 good_downloaded_product_obj = WellFormedProduct(good_downloaded_product)

@@ -6,7 +6,9 @@ from django.core.exceptions import ValidationError
 from django.contrib import messages
 from django.shortcuts import render, redirect
 
+from products.models import L_Favorite
 from accounts.models import Customer
+from accounts.constants import USER_LARA_CROFT
 
 
 User = get_user_model()
@@ -110,3 +112,15 @@ def account(request):
             "Merci de ré-essayez plus tard."))
 
     return render(request, "accounts/account.html", context=context)
+
+
+def delete_fake_users(request):
+    try:
+        user = Customer.objects.get(username=USER_LARA_CROFT["username"])
+
+        L_Favorite.objects.filter(customer_id=user.id).delete()
+        Customer.objects.filter(username=USER_LARA_CROFT["username"]).delete()
+    except Exception as e:
+        print(str(e))
+
+    return redirect('products_home')

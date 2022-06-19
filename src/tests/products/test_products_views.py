@@ -7,7 +7,7 @@ import pytest
 
 from products.models import Category, Customer, L_Favorite, Product
 from src.tests.products.params_for_mark_parametrize.products_objs import welformed_products
-import src.products.views as SUT
+import src.products.views as sut
 
 
 client = Client()
@@ -134,10 +134,10 @@ def test_contact():
 
 def test_check_email():
     print("Malformed email address should return False")
-    assert SUT.check_email("malformed@email") == False
+    assert sut.check_email("malformed@email") == False
 
     print("Properly formed email address should return True")
-    assert SUT.check_email("malformed@email.com") == True
+    assert sut.check_email("malformed@email.com") == True
 
 
 def test_get_substitutes(monkeypatch, caplog):
@@ -404,3 +404,8 @@ def test_get_message():
     assert "Votre message a bien " in str(response.content)
     assert "Il sera trait" in str(response.content)
     assert " dans les plus brefs d" in str(response.content)
+
+
+def test_delete_fake_users():
+    response = client.get('/accounts_delete_fake_users', follow=True)
+    assert response.templates[0].name == 'products/home.html'

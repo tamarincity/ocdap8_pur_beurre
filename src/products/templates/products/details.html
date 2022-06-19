@@ -122,28 +122,37 @@
     <!-- Add original and substitutes to favotites -->
     <section>
         <center>
-        <form action="products_add_to_favorites" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="original_id" value="{{original_product.id}}"/>
-            <input type="hidden" name="substitute_id" value="{{substitute_product.id}}"/>
-            <input type="hidden" name="user_id" value="{{user.id}}"/>
-            <input type="hidden" name="is_submit_button_clicked" value="yes"/>
-            <button type="submit" style="background-color: white; border: 1px solid; border-radius: 0.5rem;">
-                <div class="one-row">
-                    <img
-                        src="static/images/arrow_right_black.png"
-                        alt="Flèche vers la une carotte"
-                        title="Enregistrer dans mes aliments"
-                        class="img-to-my-fav" />
-                    <img
-                        src="static/images/carotte_server.png"
-                        alt="Carotte vivante qui porte un plateau sous cloche"
-                        title="Enregistrer dans mes aliments"
-                        class="img-to-my-fav" />
-                    <span class="center-text-vertically">Ajouter à mes aliments</span>
-                </div>
-            </button>
-        </form>
+        {% if messages %}
+        {% else %}
+        {% if original_product.id %}
+            <form action="products_add_to_favorites" method="post">
+
+                {% csrf_token %}
+                <input type="hidden" name="original_id" value="{{original_product.id}}"/>
+                <input type="hidden" name="substitute_id" value="{{substitute_product.id}}"/>
+                <input type="hidden" name="user_id" value="{{user.id}}"/>
+                <input type="hidden" name="is_submit_button_clicked" value="yes"/>
+
+
+                <button type="submit" style="background-color: white; border: 1px solid; border-radius: 0.5rem;">
+                    <div class="one-row">
+                        <img
+                            src="static/images/arrow_right_black.png"
+                            alt="Flèche vers la une carotte"
+                            title="Enregistrer dans mes aliments"
+                            class="img-to-my-fav" />
+                        <img
+                            src="static/images/carotte_server.png"
+                            alt="Carotte vivante qui porte un plateau sous cloche"
+                            title="Enregistrer dans mes aliments"
+                            class="img-to-my-fav" />
+                        <span class="center-text-vertically">Ajouter à mes aliments</span>
+                    </div>
+                </button>
+
+            </form>
+        {% endif %}
+        {% endif %}
         </center>
         <br/><br/><br/>
     </section>
