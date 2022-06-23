@@ -10,19 +10,18 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
-import os
+import logging
+from ast import literal_eval
 from pathlib import Path
 
 import dj_database_url
 import django_on_heroku
 from decouple import config
-from dotenv import load_dotenv, find_dotenv
 import environ
 
 
+# Set env
 env = environ.Env(DEBUG=(bool, False))
-# Set the project base directory
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Take environment variables from .env file
 environ.Env.read_env()
@@ -30,19 +29,25 @@ environ.Env.read_env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ('DJ_SECRET_KEY')
+SECRET_KEY = env('DJ_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', False)
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', ['purebeurre2022cicd.herokuapp.com',])
+try:
+    ALLOWED_HOSTS = literal_eval(env('ALLOWED_HOSTS'))
+except Exception as e:
+    logging.info(f"Production mode for allowed host ({str(e)}")
+    ALLOWED_HOSTS = ['djblogcicd.herokuapp.com', ]
+
 
 # Logging ====================
-DEBUG_PROPAGATE_EXCEPTIONS = config('DEBUG_PROPAGATE_EXCEPTIONS', True)
+# DEBUG_PROPAGATE_EXCEPTIONS = config('DEBUG_PROPAGATE_EXCEPTIONS', True)
 
 LOGGING = {
     'version': 1,
@@ -120,8 +125,6 @@ WSGI_APPLICATION = 'pur_beurre.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-load_dotenv(find_dotenv())
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -133,28 +136,8 @@ DATABASES = {
     }
 }
 
-
 # Heroku settings ============
 django_on_heroku.settings(locals(), staticfiles=False)
-# del DATABASES['default']['OPTIONS']['sslmode']
-
-# Password validation
-# https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
 
 
 # Password validation
@@ -191,20 +174,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATIC_ROOT = BASE_DIR / 'static'
 STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'
-
-# Setting Static Root
-STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Extend of User
 AUTH_USER_MODEL = 'accounts.Customer'
