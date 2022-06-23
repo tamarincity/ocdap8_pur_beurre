@@ -41,7 +41,7 @@ jobs:
       run: |
         pip install pytest-django
         export PYTHONPATH=src
-        pytest
+        python -m pytest
     # Command to get token from heroku => heroku authorizations:create
     - name: Deploy to Heroku
       env:
