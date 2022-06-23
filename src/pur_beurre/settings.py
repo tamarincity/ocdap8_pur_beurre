@@ -10,8 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
-import logging
-from ast import literal_eval
 from pathlib import Path
 
 import dj_database_url
@@ -44,11 +42,7 @@ ALLOWED_HOSTS_STR = env('ALLOWED_HOSTS', default=None)
 
 ALLOWED_HOSTS = ALLOWED_HOSTS_STR or ['djblogcicd.herokuapp.com', ]
 
-
-
 # Logging ===================
-# DEBUG_PROPAGATE_EXCEPTIONS = config('DEBUG_PROPAGATE_EXCEPTIONS', True)
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
