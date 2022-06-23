@@ -2,46 +2,12 @@ import time
 
 import pytest
 
-from products.models import Category, Product
-from accounts.models import Customer
-from src.tests.products.params_for_mark_parametrize.products_objs import welformed_products
 from accounts.constants import USER_LARA_CROFT
 
 
-pytestmark = pytest.mark.django_db
-
-categories_dict = {}
-
-
-@pytest.fixture
-def store_categories_in_db():
-    # Create categories from the attribute 'categories' of each downloaded product
-    # so that a product can be added to the database and get included in a stored category
-    categories = set(
-        category
-        for product in welformed_products
-        for category in product.categories)
-
-    for category in categories:
-        categories_dict[category] = Category.objects.create(name=category)
-
-    return categories_dict
-
-
-@pytest.fixture
-def add_products_to_db(store_categories_in_db):
-    store_categories_in_db
-    Product.add_many(welformed_products)
-
-
-@pytest.fixture
-def remove_user_lara_croft():
-    Customer.objects.filter(username="lara@croft-12345678.fr").delete()
-
-
-@pytest.mark.test_me
-@pytest.mark.usefixtures("init_driver")
-class TestBrowser:
+@pytest.mark.functional_test
+@pytest.mark.usefixtures("init_driver")  # From conftest.py - Select and initialyze the driver
+class TestApplication:
     def test_signup(self):
         try:
             driver = self.driver
@@ -50,12 +16,14 @@ class TestBrowser:
             # Remove fake users from database
             driver.get("http://localhost:5550/accounts_delete_fake_users")
 
+            # Go to home page
             print("No characters after the domain name should take the user to the home page")
             driver.get("http://localhost:5550")
             time.sleep(2)
             h1_content = find("//h1").text
             assert "Du gras, oui, mais de qualit" in h1_content
 
+            # Enter keywords to get the original product
             print("Entering keywords in the search bar")
             field_enter_product_keywords = find("//input[@id='form1']")
             field_enter_product_keywords.send_keys("coca cola")
@@ -73,6 +41,7 @@ class TestBrowser:
             selected_product = find('//div[contains(text(), "original")]')
             assert selected_product
 
+            # Click on the original product to get the substitute products list
             print("Clicking on the original product")
             selected_product.click()
             time.sleep(2)
@@ -80,6 +49,7 @@ class TestBrowser:
             print("     should take the user to the substitute products page")
             assert "Vous pouvez remplacer cet aliment par" in driver.page_source
 
+            # Click on substitute product to get details
             print("Clicking on a substitute product", end=" ")
             selected_product = find("//button[@class='product-as-button']")
             selected_product.click()
@@ -88,6 +58,7 @@ class TestBrowser:
             print("should take the user to the details page of the substitute product")
             assert "nutritionnels pour 100g" in driver.page_source
 
+            # Click on button to go to the OpenFoodFact web site to get more information
             print("Clicking the button <<Voir la fiche d'OpenFoodFact>>")
             openfoodfact_btn = find("//button[@class='biscuits-as-background-for-button']")
             openfoodfact_btn.click()
@@ -99,10 +70,13 @@ class TestBrowser:
             assert "Open Food Facts" in driver.page_source
             assert "les produits alimentaires du monde entier." in driver.page_source
             time.sleep(2)
+
+            # Close the OpenFoodFact page
             print("Closing the new tab should take back the user to the Pure Beurre application")
             driver.close()
             driver.switch_to.window(driver.window_handles[0])  # Switch to previous window
 
+            # Go to sign up page
             print("When << s'inscrire >> is clicked should take the user to "
                     "signup page")
             # Click on sign up link
@@ -111,6 +85,7 @@ class TestBrowser:
             h2_content = find("//h2").text
             assert "inscrire" in h2_content
 
+            # Fill in the signup form
             print("If the signup form is properly filled and submitted then")
             email_field = find('//*[@id="username"]')
             email_field.send_keys(USER_LARA_CROFT["username"])
@@ -129,6 +104,7 @@ class TestBrowser:
             link_to_logout = driver.find_element_by_xpath('//a[@id="logout"]')
             assert link_to_logout
 
+            # Enter keywords to get the original product
             print("Entering keywords in the search bar")
             field_enter_product_keywords = find("//input[@id='form1']")
             field_enter_product_keywords.send_keys("coca cola")
@@ -145,6 +121,7 @@ class TestBrowser:
             selected_product = find('//div[contains(text(), "original")]')
             assert selected_product
 
+            # Click on the original product to get the substitute products list
             print("Clicking on the original product")
             selected_product.click()
             time.sleep(2)
@@ -152,6 +129,7 @@ class TestBrowser:
             print("     should take the user to the substitute products page")
             assert "Vous pouvez remplacer cet aliment par" in driver.page_source
 
+            # Click on button to add the substitute product to the favorite food list
             print("Clicking on the button 'Ajouter à mes aliments'", end=" ")
             add_to_fav_btn = find("//*[contains(text(), 'Ajouter')]")
             add_to_fav_btn.click()
@@ -163,6 +141,7 @@ class TestBrowser:
             assert "enregistr" in driver.page_source
             assert " dans vos aliments pr" in driver.page_source
 
+            # Click on button to go to the favorites page
             print("Clicking on 'mes aliments' (the carrot icon)")
             favorites_link = find("//a[@id='get_fav']")
             favorites_link.click()
@@ -175,6 +154,7 @@ class TestBrowser:
             image_of_product = find("//img[@class='image-thumb-of-product']")
             assert image_of_product
 
+            # Click on icon to logout
             print("Clicking on the 'logout' icon ")
             logout_link = find("//a[@id='logout']")
             logout_link.click()
@@ -195,3 +175,7 @@ class TestBrowser:
         except Exception as e:
             driver.save_screenshot("screenshot_of fail.png")
             print("TEST FAILED! Reason: ", str(e))
+            if "connection" in str(e).lower():
+                assert "Functional test failed! Maybe the server is not running." in str(e)
+            else:
+                assert "Functional test failed!" in ""
