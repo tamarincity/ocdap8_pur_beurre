@@ -19,7 +19,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Select github actions
     - uses: actions/checkout@v3
     - run: |
         git fetch --prune --unshallow
