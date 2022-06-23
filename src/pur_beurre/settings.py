@@ -40,7 +40,10 @@ SECRET_KEY = env('DJ_SECRET_KEY', default="blablabla")
 DEBUG = env('DEBUG', default=False)
 
 
-ALLOWED_HOSTS = literal_eval(env('ALLOWED_HOSTS', default=['djblogcicd.herokuapp.com', ]))
+ALLOWED_HOSTS = literal_eval(env('ALLOWED_HOSTS', default=None))
+
+if not ALLOWED_HOSTS:
+    ALLOWED_HOSTS = ['djblogcicd.herokuapp.com', ]
 
 
 
