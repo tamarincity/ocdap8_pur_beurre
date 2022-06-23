@@ -46,7 +46,7 @@ except Exception as e:
     ALLOWED_HOSTS = ['djblogcicd.herokuapp.com', ]
 
 
-# Logging ====================
+# Logging ===================
 # DEBUG_PROPAGATE_EXCEPTIONS = config('DEBUG_PROPAGATE_EXCEPTIONS', True)
 
 LOGGING = {
