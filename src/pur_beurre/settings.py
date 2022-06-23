@@ -34,16 +34,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('DJ_SECRET_KEY')
+SECRET_KEY = env('DJ_SECRET_KEY', default="blablabla")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
+DEBUG = env('DEBUG', default=False)
 
-try:
-    ALLOWED_HOSTS = literal_eval(env('ALLOWED_HOSTS'))
-except Exception as e:
-    logging.info(f"Production mode for allowed host ({str(e)}")
-    ALLOWED_HOSTS = ['djblogcicd.herokuapp.com', ]
+
+ALLOWED_HOSTS = literal_eval(env('ALLOWED_HOSTS', default=['djblogcicd.herokuapp.com', ]))
+
 
 
 # Logging ===================
