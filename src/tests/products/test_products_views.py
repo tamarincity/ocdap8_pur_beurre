@@ -118,6 +118,7 @@ def get_user_credentials():
     return {"username": "tomb@raider.fr", "password": "12345678", "email": "tomb@raider.fr"}
 
 
+@pytest.mark.integration_test
 def test_home():
 
     print("No end-point after the domain name should take the user to the home page")
@@ -125,6 +126,7 @@ def test_home():
     assert response.templates[0].name == 'products/home.html'
 
 
+@pytest.mark.integration_test
 def test_contact():
 
     print("'products_contact' as URL should take the user to the contact page")
@@ -140,6 +142,7 @@ def test_check_email():
     assert sut.check_email("malformed@email.com") == True
 
 
+@pytest.mark.integration_test
 def test_get_substitutes(monkeypatch, caplog):
     caplog.clear()
 
@@ -194,6 +197,7 @@ def test_get_substitutes(monkeypatch, caplog):
     assert "Il n&#x27;y a pas de meilleurs produit qui soit similaire" in str(response.content)
 
 
+@pytest.mark.integration_test
 def test_add_to_favorites(
         add_customer_to_db, add_products_to_db, caplog):
 
@@ -228,6 +232,7 @@ def test_add_to_favorites(
     client.logout()
 
 
+@pytest.mark.integration_test
 def test_get_all_favorites(add_customer_to_db, add_products_to_db):
 
     user = add_customer_to_db
@@ -270,6 +275,7 @@ def test_get_all_favorites(add_customer_to_db, add_products_to_db):
     assert len(response.templates) == 0
 
 
+@pytest.mark.integration_test
 def test_get_origial_product(caplog, add_products_to_db):
     caplog.set_level(logging.INFO)
     caplog.clear()
@@ -329,12 +335,14 @@ def test_get_origial_product(caplog, add_products_to_db):
     assert "autres mots-clefs." in str(response.content)
 
 
+@pytest.mark.integration_test
 def test_legal_notice():
     print("This view should return the page 'products/legal_notice.html'")
     response = client.get('/products_legal_notice')
     assert response.templates[0].name == 'products/legal_notice.html'
 
 
+@pytest.mark.integration_test
 def test_details(caplog, add_products_to_db):
     caplog.set_level(logging.INFO)
     caplog.clear()
@@ -350,7 +358,7 @@ def test_details(caplog, add_products_to_db):
     assert response.context["substitute_product"].name == "Lemonade light"
 
 
-# @pytest.mark.test_me
+@pytest.mark.integration_test
 def test_get_message():
 
     print("No data sent to the page should serve the page of contact")
@@ -406,6 +414,7 @@ def test_get_message():
     assert " dans les plus brefs d" in str(response.content)
 
 
+@pytest.mark.integration_test
 def test_delete_fake_users():
     response = client.get('/accounts_delete_fake_users', follow=True)
     assert response.templates[0].name == 'products/home.html'

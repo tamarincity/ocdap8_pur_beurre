@@ -12,7 +12,7 @@ wrong_list_of_args = ["boisson", "10", "any", "20"]
 list_of_args_as_str = ""
 
 
-def test__check_if_args_well_formed(monkeypatch, caplog):
+def test_check_if_args_well_formed(monkeypatch, caplog):
     caplog.set_level(logging.INFO)
 
     def mock_download_products(quantity_of_products, keyword):
@@ -38,7 +38,7 @@ def test__check_if_args_well_formed(monkeypatch, caplog):
     monkeypatch.setattr("src.products.etl_load.populate_database",
                         mock_populate_database)
 
-    print("If the last value in the cli is not a number, then should return None"
+    print("If the last value in the cli is not a number, then should return None "
             "because no problem occurred")
     assert SUT._check_if_args_well_formed(
         SUT, {'list_of_args': right_list_of_args}) == None
