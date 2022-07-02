@@ -239,11 +239,6 @@ def legal_notice(request):
 
 
 def details(request):
-    print()
-    print()
-    print("DETAILS !")
-    print()
-    print()
 
     if original_product := request.GET.get("original_id", ""):
         original_product = Product.objects.get(id=request.GET.get("original_id"))

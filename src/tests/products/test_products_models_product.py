@@ -47,8 +47,7 @@ class TestProductModel:
         assert caplog.text != None
         caplog.clear()
 
-        print("A list of welformed products that are already stored "
-                "in the database should store all of the products then return True.")
+        print("A list of welformed products should store all of the products then return True.")
         assert SUT.add_many(
             welformed_products) == True
 
@@ -56,9 +55,11 @@ class TestProductModel:
 
     def test_find_original_products(self, add_products_to_db):
 
+        print("Preparing the database for testing...")
         store_categories_in_db   # To create categories_dict
 
         print("Have the products been added to the database?: ", SUT.add_many(welformed_products))
+        print("Database is now OK.")
 
         print(
             "'beverage' as keyword should return all products containing the keyword 'beverage'")

@@ -65,6 +65,7 @@ def test_check_email_validity(monkeypatch):
     assert check_mail_validity("toto@dupont") == False
 
 
+@pytest.mark.integration_test
 def test_login_user(monkeypatch):
 
     def mock_authenticate(username, password):
@@ -102,6 +103,7 @@ def test_login_user(monkeypatch):
     assert (response.redirect_chain[0][0] == "/")  # redirect_chain = [('/', 302)]
 
 
+@pytest.mark.integration_test
 def test_logout_user(monkeypatch):
 
     def mock_logout(request):
@@ -109,13 +111,17 @@ def test_logout_user(monkeypatch):
 
     monkeypatch.setattr("accounts.views.logout", mock_logout)
 
-    print("If logout is clicked then should redirect to the home page")
+    print("If logout is clicked then ")
+    print("     should redirect to the home page")
     # follow=True allows to follow redirection
     response = client.get('/accounts_logout', follow=True)
-
     assert (response.redirect_chain[0][0] == "/")  # redirect_chain = [('/', 302)]
 
+    print("     should display the link 'Connexion'")
+    assert "Connexion" in str(response.content)
 
+
+@pytest.mark.integration_test
 def test_signup_user(monkeypatch):
 
     def mock_get_credentials(request):
@@ -178,6 +184,7 @@ def test_signup_user(monkeypatch):
     assert (response.redirect_chain[0][0] == "/")  # redirect_chain = [('/', 302)]
 
 
+@pytest.mark.integration_test
 def test_account(monkeypatch):
 
     # Create a registered user

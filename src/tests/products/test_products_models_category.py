@@ -49,5 +49,5 @@ class TestCategoryModel:
         print("         with the name of each category as a key")
         assert ",".join(categories) == ",".join({"category_1", "category_2", "category3"})
 
-        print("         with the values as instances of Category")
+        print("         with an instance of Category as a value")
         assert [category for category in categories.values() if not (isinstance, SUT)] or True
